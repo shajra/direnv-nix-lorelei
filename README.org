@@ -1,0 +1,23 @@
+#+TITLE: Example Nix-based Project
+
+This is a skeleton project illustrating how to use [[https://github.com/shajra/nix-project][shajra/nix-project]] to
+build/maintain software projects with Nix.
+
+Two scripts have been set up in a [[./support][./support]] directory:
+
+- =docs-generate=
+- =dependencies-upgrade=
+
+Both are typically run with no arguments. =docs-generate= will generate
+Markdown files from Emacs Org-mode files. =dependencies-upgrade= as its name
+implies, updates the dependencies.
+
+=docs-generate= is configured to execute source blocks. The result will be
+written to the Org-mode files in-place, as well as included in the exported
+Markdown.
+
+Here's an example source block to illustrate evaluation of =whoami=:
+
+#+BEGIN_SRC shell :results output :exports both
+  whoami
+#+END_SRC
