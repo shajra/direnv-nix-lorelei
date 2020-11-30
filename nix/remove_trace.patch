@@ -1,0 +1,12 @@
+diff -u a/src/logged-evaluation.nix b/src/logged-evaluation.nix
+--- a/src/logged-evaluation.nix
++++ b/src/logged-evaluation.nix
+@@ -18,7 +18,7 @@ let
+
+   imported =
+     let
+-      raw = overrides.scopedImport overrides src;
++      raw = import src;
+     in
+       if (builtins.isFunction raw)
+       then raw {}

@@ -9,7 +9,16 @@ nix run \
     --ignore-environment \
     --keep LANG \
     --keep LOCALE_ARCHIVE \
-    --file 'nix/sources' \
-    nix-project-org2gfm \
-    pkgs.coreutils \
-    --command org2gfm --evaluate "$@"
+    --file nix \
+    nixpkgs-stable.bash \
+    nixpkgs-stable.coreutils \
+    nixpkgs-stable.gnugrep \
+    nixpkgs-stable.nix-project-org2gfm \
+    nixpkgs-stable.tree \
+    nixpkgs-unstable.ansifilter \
+    --command \
+    org2gfm \
+    --ignore links.org \
+    --nix "$(command -v nix)" \
+    --evaluate \
+    "$@"
