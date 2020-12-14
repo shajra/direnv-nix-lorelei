@@ -12,7 +12,12 @@ let
         overlays = [overlay];
     };
 
-    lorri = nixpkgs-stable.applyPatches {
+    lorri-stock = nixpkgs-stable.applyPatches {
+        name = "lorri-stock";
+        src = sources.lorri;
+    };
+
+    lorri-patched = nixpkgs-stable.applyPatches {
         name = "lorri-patched";
         src = sources.lorri;
         patches = [./remove_trace.patch];
@@ -21,13 +26,16 @@ let
     overlay = super: self: import sources.nix-project // rec {
         lorri-runtime =
             self.callPackage
-            (import "${lorri}/nix/runtime.nix")
+            (import "${lorri-stock}/nix/runtime.nix")
             {};
-        lorri-eval = {src}:
-            (import "${lorri}/src/logged-evaluation.nix")
+        lorri-eval-stock = {src}:
+            (import "${lorri-stock}/src/logged-evaluation.nix")
+            { inherit src; runTimeClosure = lorri-runtime; };
+        lorri-eval-patched = {src}:
+            (import "${lorri-patched}/src/logged-evaluation.nix")
             { inherit src; runTimeClosure = lorri-runtime; };
         lorri-envrc =
-            "${lorri}/src/ops/direnv/envrc.bash";
+            "${lorri-stock}/src/ops/direnv/envrc.bash";
         direnv-nix-lorelei =
             self.callPackage (import ./direnv-nix-lorelei.nix) {};
     };
@@ -35,7 +43,8 @@ let
     direnv-nix-lorelei = nixpkgs-stable.direnv-nix-lorelei;
     direnv = nixpkgs-stable.direnv;
 
-    lorri-eval = nixpkgs-stable.lorri-eval;
+    lorri-eval-stock = nixpkgs-stable.lorri-eval-stock;
+    lorri-eval-patched = nixpkgs-stable.lorri-eval-patched;
     lorri-envrc = nixpkgs-stable.lorri-envrc;
 
 in {
@@ -43,7 +52,8 @@ in {
     direnv
     direnv-nix-lorelei
     lorri-envrc
-    lorri-eval
+    lorri-eval-stock
+    lorri-eval-patched
     nixpkgs-stable
     nixpkgs-unstable;
 }

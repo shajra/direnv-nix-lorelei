@@ -178,13 +178,18 @@ use_nix_gcrooted --help
     			     changes
         -A --auto-watch-mtime    watch autodetected files for
     			     modification times
+        -d --auto-watch-deep     deeper searching for -a and -A options
         -w --watch-content PATH  watch a file's content for changes
         -W --watch-mtime PATH    watch a file's modification time
         -C --ignore-cache        recompute new environment every time
         -k --keep-last NUM       protect last N caches from GC
     			     (default 5)
 
-With the `--auto-watch-content` and `--auto-watch-mtime` switches, you don't have to worry about which files to watch for changes. You can either watch these files when their modifications time change, or when their content actually changes (touching a file changes its modification time, but not its content). If you want to specify files to watch explicitly, you can use the `--watch-content` and `--watch-mtime` switches.
+With the `--auto-watch-content` and `--auto-watch-mtime` switches, you don't have to worry about which files to watch for changes. You can either watch these files when their modifications time change, or when their content actually changes (touching a file changes its modification time, but not its content).
+
+The `--auto-watch-content` and `--auto-watch-mtime` switches catch a good amount of Nix files, but won't catch everything you might have the idea to watch. If you want to specify files to watch explicitly, you can use the `--watch-content` and `--watch-mtime` switches.
+
+You can use the `--auto-watch-deep` switch to have the auto-watching features look a little deeper for files to watch. However, the evaluation time you'll face for an not-yet-cached environment will be notably longer for this deeper search (possibly twice as long). Note auto-watching without the `--auto-watch-deep` switch shouldn't add much evaluation overhead, so you should be able to use the normal shallower auto-detection without worrying about a slowdown.
 
 If for some (unlikely) reason, you want the benefits of protection from Nix garbage collection, but not cache the evaluation of environments, you can use `--ignore-cache`. Note, that you still need to specify files to watch for changes. With `--ignore-cache`, you'll recalculate the Nix expression for your project every time these watched files trigger Direnv to recalculate an environment.
 

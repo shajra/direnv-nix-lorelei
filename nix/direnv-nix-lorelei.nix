@@ -4,7 +4,8 @@
 , jq
 , lib
 , lorri-envrc
-, lorri-eval
+, lorri-eval-stock
+, lorri-eval-patched
 , nix-project-lib
 , path
 , xxHash
@@ -52,6 +53,7 @@ OPTIONS:
                              changes
     -A --auto-watch-mtime    watch autodetected files for
                              modification times
+    -d --auto-watch-deep     deeper searching for -a and -A options
     -w --watch-content PATH  watch a file's content for changes
     -W --watch-mtime PATH    watch a file's modification time
     -C --ignore-cache        recompute new environment every time
@@ -77,6 +79,7 @@ use_nix_gcrooted()
     local auto_watch_none=()
     local auto_watch_mtime=()
     local auto_watch_hash=()
+    local auto_watch_eval=patched
     local auto_watch=auto_watch_none
     local shell_file=""
     local keep_last=5
@@ -92,6 +95,7 @@ use_nix_gcrooted()
         watched_by_mtime \
         watched_by_hash \
         auto_watch \
+        auto_watch_eval \
         shell_file \
         keep_last \
         "$@"
@@ -109,6 +113,7 @@ use_nix_gcrooted()
             "$env_cache" \
             "$shell_file" \
             "$keep_last" \
+            "$auto_watch_eval" \
             "$auto_watch"
         _nixgc_record_build_proof "$build_proof" \
             "''${watched_by_mtime[@]}" "''${auto_watch_mtime[@]}"
@@ -133,6 +138,7 @@ _nixgc_parse_args()
     local -n _watched_by_mtime="$1"; shift
     local -n _watched_by_hash="$1"; shift
     local -n _auto_watch="$1"; shift
+    local -n _auto_watch_eval="$1"; shift
     local -n _shell_file="$1"; shift
     local -n _keep_last="$1"; shift
 
@@ -158,6 +164,11 @@ _nixgc_parse_args()
             # DESIGN: https://github.com/koalaman/shellcheck/issues/817
             # shellcheck disable=SC2034
             _ignore_cache=true
+            ;;
+        -d|--auto-watch-deep)
+            # DESIGN: https://github.com/koalaman/shellcheck/issues/817
+            # shellcheck disable=SC2034
+            _auto_watch_eval=stock
             ;;
         -k|--keep-last)
             local asked_keep_last="''${2:-}"
@@ -304,9 +315,10 @@ _nixgc_rebuild()
     local shell_file=
     shell_file="$("${coreutils}/bin/readlink" -f "$2")"
     local keep_last="$3"
+    local auto_watch_eval="$4"
     # DESIGN: https://github.com/koalaman/shellcheck/issues/817
     # shellcheck disable=SC2034
-    local -n _auto_watch="$4"
+    local -n _auto_watch="$5"
 
     local cache_root
     cache_root="$("${coreutils}/bin/dirname" "$env_cache")"
@@ -316,7 +328,8 @@ _nixgc_rebuild()
     "${coreutils}/bin/mkdir" --parents "$cache_root"
 
     local store_path=()
-    _nixgc_build_autowatching "$shell_file" store_path _auto_watch
+    _nixgc_build_autowatching \
+        "$shell_file" "$auto_watch_eval" store_path _auto_watch
 
     local _pwd;
     _pwd="$("${coreutils}/bin/pwd")"
@@ -363,12 +376,14 @@ _nixgc_rebuild()
 _nixgc_build_autowatching()
 {
     local shell_file="$1"
-    local -n _out="$2"
-    local -n _err="$3"
+    local auto_watch_eval="$2"
+    local -n _out="$3"
+    local -n _err="$4"
     local both=()
     mapfile -t both < <({
-        { _nixgc_build "$shell_file" | _nixgc_capture_build_out ; } 3>&1 1>&2 2>&3 \
-        | _nixgc_capture_autowatchable ;
+        { _nixgc_build "$shell_file" "$auto_watch_eval" \
+            | _nixgc_capture_build_out ;
+        } 3>&1 1>&2 2>&3 | _nixgc_capture_autowatchable ;
     } 2>&1)
     # DESIGN: https://github.com/koalaman/shellcheck/issues/817
     # shellcheck disable=SC2034
@@ -381,12 +396,13 @@ _nixgc_build_autowatching()
 _nixgc_build()
 {
     local shell_file="$1"
+    local auto_watch_eval="$2"
     IN_NIX_SHELL=1 \
         nix-build \
         --verbose --verbose \
         --no-out-link \
         --arg src "$shell_file" \
-        --expr "((import ${buildSource}).lorri-eval)"
+        --expr "((import ${buildSource}).lorri-eval-$auto_watch_eval)"
 }
 
 _nixgc_select_line()
@@ -404,7 +420,7 @@ _nixgc_capture_autowatchable()
 {
     "${gnused}/bin/sed" -n "
         # find paths and substitute them for the line
-        s/\(copied source\|evaluating file\|trace: file read:\)[^']*'\([^']\+\)'.*/\2/;
+        s/\(copied source\|evaluating file\|trace: lorri read:\)[^']*'\([^']\+\)'.*/\2/;
         # delete /nix/store paths and lines with no found paths
         /\(^\/nix\/\|^[^\/]\)/d;
         # print paths found not in /nix/store
@@ -417,7 +433,7 @@ _nixgc_capture_autowatchable()
             else "${coreutils}/bin/echo" "e: $f"
             fi
         done
-    }
+    } | "${coreutils}/bin/sort" -u
 }
 
 _nixgc_import_env()
