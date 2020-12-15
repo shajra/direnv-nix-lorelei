@@ -185,6 +185,8 @@ use_nix_gcrooted --help
         -k --keep-last NUM       protect last N caches from GC
     			     (default 5)
 
+Direnv needs to know when to consider recalculating an environment's variables. To do this, we need to register files to watch for changes. This is what the "watch" switches above help specify.
+
 With the `--auto-watch-content` and `--auto-watch-mtime` switches, you don't have to worry about which files to watch for changes. You can either watch these files when their modifications time change, or when their content actually changes (touching a file changes its modification time, but not its content).
 
 The `--auto-watch-content` and `--auto-watch-mtime` switches catch a good amount of Nix files, but won't catch everything you might have the idea to watch. If you want to specify files to watch explicitly, you can use the `--watch-content` and `--watch-mtime` switches.
