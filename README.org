@@ -10,14 +10,6 @@
    The following helps (using Noweb) set up Nix environment variables for
    source block evaluation.
 
-   #+NAME: pwd
-   #+BEGIN_SRC shell :results silent
-     echo cd "$(pwd)"
-   #+END_SRC
-
-   #+RESULTS: pwd
-   : cd /home/tnks/src/shajra/direnv-nix-lorelei
-
    #+NAME: nix-init
    #+BEGIN_SRC shell :eval no
      export NIX_PROFILE=$(pwd)/nix-profile
@@ -36,10 +28,18 @@
      rm --force "$NIX_PROFILE"* || true
    #+END_SRC
 
+   This is just a hack to deal with the fact that we never know what directory a
+   session will start in, so we need a way to calculate the PWD to jump to it.
+
+   #+NAME: pwd
+   #+BEGIN_SRC shell :results output silent
+     echo cd "$(pwd)"
+   #+END_SRC
+
    This begins a session with environment variables initialized.
 
    #+NAME: session-init
-   #+BEGIN_SRC bash :session env :results silent :noweb yes
+   #+BEGIN_SRC bash :session env :results output silent :noweb yes
      <<pwd()>>
      <<nix-init>>
    #+END_SRC
