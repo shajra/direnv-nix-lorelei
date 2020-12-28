@@ -213,12 +213,13 @@ built-in Nix support of Direnv with the following features:
      use_nix_gcrooted --help
    #+END_SRC
 
+   #+NAME: help
    #+BEGIN_SRC shell :session env :results output :exports results
      . "$NIX_PROFILE/share/direnv-nix-lorelei/nix-lorelei.sh"
      use_nix_gcrooted --help
    #+END_SRC
 
-   #+RESULTS:
+   #+RESULTS: help
    #+begin_example
 
    USAGE: use_nix_gcrooted [OPTION]... [FILE]

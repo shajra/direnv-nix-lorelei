@@ -57,7 +57,6 @@
      export NIX_PROFILE=$(pwd)/nix-profile
      export NIX_PAGER=cat
      export PATH="$NIX_PROFILE/bin:$PATH"
-     export PS1='$ '
    #+END_SRC
 
    Next we perform some side-effects to set up the evaluation of the whole
@@ -66,8 +65,8 @@
    #+NAME: cleanup
    #+BEGIN_SRC shell :dir .. :results output silent :noweb yes
      <<nix-init>>
-     rm --force result* || true
-     rm --force "$NIX_PROFILE"* || true
+     rm --force result*
+     rm --force "$NIX_PROFILE"*
    #+END_SRC
 
    This is just a hack to deal with the fact that we never know what directory a
@@ -81,7 +80,7 @@
    This begins a session with environment variables initialized.
 
    #+NAME: session-init
-   #+BEGIN_SRC shell :session env :results silent :noweb yes
+   #+BEGIN_SRC shell :session env :results output silent :noweb yes
      <<pwd-parent()>>
      <<nix-init>>
    #+END_SRC
@@ -283,7 +282,7 @@
    =default.nix=:
 
    #+NAME: nix-search-alt
-   #+BEGIN_SRC shell :dir .. :results silent
+   #+BEGIN_SRC shell :dir .. :results output silent
      nix search --file . --no-cache
    #+END_SRC
 
@@ -336,7 +335,7 @@
    #+END_SRC
 
    #+RESULTS: nix-build-link
-   : /nix/store/zsawzbli7nam4hnaawfvc4y80bglsxyn-direnv-nix-lorelei
+   : /nix/store/xgmak47agd7ql8yas51s4nw2dbisa4cx-direnv-nix-lorelei
 
    Following these symlinks, we can see the files the project provides:
 
@@ -366,7 +365,7 @@
    #+END_SRC
 
    #+RESULTS: nix-build-path
-   : /nix/store/zsawzbli7nam4hnaawfvc4y80bglsxyn-direnv-nix-lorelei
+   : /nix/store/xgmak47agd7ql8yas51s4nw2dbisa4cx-direnv-nix-lorelei
 
 ** Running commands
 
@@ -445,7 +444,7 @@
    switch:
 
    #+NAME: nix-env-query-1
-   #+BEGIN_SRC shell :session env :results silent
+   #+BEGIN_SRC shell :session env :results output silent
      nix-env --query
    #+END_SRC
 

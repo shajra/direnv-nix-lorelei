@@ -33,7 +33,7 @@ nix-project-lib.writeShellCheckedShareLib name packagePath
 
 _nixgc_usage()
 {
-    ${coreutils}/bin/cat - <<EOF
+    "${coreutils}/bin/cat" - <<EOF
 USAGE: use_nix_gcrooted [OPTION]... [FILE]
 
 DESCRIPTION:
@@ -88,7 +88,7 @@ use_nix_gcrooted()
     local hash_cache; hash_cache="$(direnv_layout_dir)/hashes"
     local build_proof
     build_proof="$(direnv_layout_dir)/delete_to_rebuild"
-    ${coreutils}/bin/mkdir -p "$(direnv_layout_dir)"
+    "${coreutils}/bin/mkdir" -p "$(direnv_layout_dir)"
 
     _nixgc_parse_args \
         ignore_cache \
@@ -332,7 +332,7 @@ _nixgc_rebuild()
         "$shell_file" "$auto_watch_eval" store_path _auto_watch
 
     local _pwd;
-    _pwd="$("${coreutils}/bin/pwd")"
+    _pwd="$(pwd)"
     _pwd="$("${coreutils}/bin/readlink" -f "$_pwd")"
     local pwd_hash
     pwd_hash="''${store_path[0]}"
@@ -429,8 +429,8 @@ _nixgc_capture_autowatchable()
         while read -r f
         do
             if [ -d "$f" ]
-            then "${coreutils}/bin/echo" "e: $f/default.nix"
-            else "${coreutils}/bin/echo" "e: $f"
+            then echo "e: $f/default.nix"
+            else echo "e: $f"
             fi
         done
     } | "${coreutils}/bin/sort" -u
