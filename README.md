@@ -33,6 +33,8 @@ Lorelei provides a [Direnv](https://direnv.net) extension to configure directory
 
 -   You can also save a configurable number of previous environments from being garbage collected.
 
+Note, Lorelei only works with projects that have a Nix file that can be called with `nix-shell` (typically called "shell.nix"). For projects that provide a Nix environment with the not-yet-released Nix flakes feature, please consider using the `use_flake` function of the [nix-direnv](https://github.com/nix-community/nix-direnv) project, which you can use concurrently with Lorelei with no conflicts.
+
 ## About Direnv<a id="sec-1-1"></a>
 
 When we go into a project's directory we often want certain environment variables set specifically to a project's needs. A very common environment variable to specify per-project is `PATH` to make available development tools needed by a project. Different projects may depend on conflicting tools, such as different versions of a compiler.
@@ -257,7 +259,7 @@ Lorelei delegates strongly to Lorri, so the limitation of requiring an explicit 
 
 However, we probably don't want to support something like `nix-shell`'s `--packages` switch. This feature of `nix-shell` is generally discouraged by the Nix community because its implementation has a lot of non-intuitive warts. Nix will soon release a `nix shell` command that has the potential to more properly replace the functionality that `nix-shell`'s `--packages` switch provides. When this occurs, both the Lorri and Lorelei can reevaluate their respective implementation strategies.
 
-Also, soon to be released are [Nix flakes](https://nixos.wiki/wiki/Flakes). If you don't know what flakes are, you may want to wait until they stabilize and are officially released. If you're an early adopter of flakes, the [Nix-direnv](https://github.com/nix-community/nix-direnv) project has support for Nix flakes. Lorelei can be installed and used concurrently with other projects offering similar functionality (Lorri, Nix-direnv, and the rest). You just make different calls in your project's `.envrc` files.
+Also, soon to be released in a new version of Nix are [Nix flakes](https://nixos.wiki/wiki/Flakes). If you don't know what flakes are, you may want to wait until they stabilize and are officially released. If you're an early adopter of flakes, the [Nix-direnv](https://github.com/nix-community/nix-direnv) project has support for Nix flakes with it's `use_flake` function. Lorelei can be installed and used concurrently with other projects offering similar functionality (Lorri, Nix-direnv, and the rest). You just make different calls in your project's `.envrc` files. No core contributor of Lorelei is using this unreleased version of Nix supporting flakes, so we didn't want to provide something we had not tested ourselves.
 
 # Release<a id="sec-5"></a>
 

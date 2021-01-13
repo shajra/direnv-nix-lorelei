@@ -67,6 +67,12 @@ built-in Nix support of Direnv with the following features:
 - You can also save a configurable number of previous environments from being
   garbage collected.
 
+Note, Lorelei only works with projects that have a Nix file that can be called
+with =nix-shell= (typically called "shell.nix").  For projects that provide a
+Nix environment with the not-yet-released Nix flakes feature, please consider
+using the =use_flake= function of the [[nixdirenv][nix-direnv]] project, which you can use
+concurrently with Lorelei with no conflicts.
+
 ** About Direnv
 
    When we go into a project's directory we often want certain environment
@@ -381,12 +387,15 @@ built-in Nix support of Direnv with the following features:
    switch provides.  When this occurs, both the Lorri and Lorelei can reevaluate
    their respective implementation strategies.
 
-   Also, soon to be released are [[nix-flakes][Nix flakes]].  If you don't know what flakes are,
-   you may want to wait until they stabilize and are officially released.  If
-   you're an early adopter of flakes, the [[nixdirenv][Nix-direnv]] project has support for Nix
-   flakes.  Lorelei can be installed and used concurrently with other projects
-   offering similar functionality (Lorri, Nix-direnv, and the rest).  You just
-   make different calls in your project's =.envrc= files.
+   Also, soon to be released in a new version of Nix are [[nix-flakes][Nix flakes]].  If you
+   don't know what flakes are, you may want to wait until they stabilize and are
+   officially released.  If you're an early adopter of flakes, the [[nixdirenv][Nix-direnv]]
+   project has support for Nix flakes with it's =use_flake= function.  Lorelei
+   can be installed and used concurrently with other projects offering similar
+   functionality (Lorri, Nix-direnv, and the rest).  You just make different
+   calls in your project's =.envrc= files.  No core contributor of Lorelei is
+   using this unreleased version of Nix supporting flakes, so we didn't want to
+   provide something we had not tested ourselves.
 
 * Release
 
