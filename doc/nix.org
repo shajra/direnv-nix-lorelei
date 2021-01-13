@@ -335,7 +335,7 @@
    #+END_SRC
 
    #+RESULTS: nix-build-link
-   : /nix/store/ryg168j7sz57f4anamh4gacw3w86v7fi-direnv-nix-lorelei
+   : /nix/store/xl6l4x3k16301jk3pgjqsqv927bk1hkx-direnv-nix-lorelei
 
    Following these symlinks, we can see the files the project provides:
 
@@ -365,7 +365,7 @@
    #+END_SRC
 
    #+RESULTS: nix-build-path
-   : /nix/store/ryg168j7sz57f4anamh4gacw3w86v7fi-direnv-nix-lorelei
+   : /nix/store/xl6l4x3k16301jk3pgjqsqv927bk1hkx-direnv-nix-lorelei
 
 ** Running commands
 
