@@ -11,18 +11,6 @@
         "url": "https://github.com/target/lorri/archive/66536ab4a503e2c30f948849e9b655ad5c0f0708.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "niv": {
-        "branch": "master",
-        "description": "Easy dependency management for Nix projects",
-        "homepage": "https://github.com/nmattia/niv",
-        "owner": "nmattia",
-        "repo": "niv",
-        "rev": "18b7314c13a6d0e82113a15c14e7a5f54286327d",
-        "sha256": "0b2xb99nn7ddysvgzncwa4vglv0j6c0l4bgxz9hl4i3gmrlq3r59",
-        "type": "tarball",
-        "url": "https://github.com/nmattia/niv/archive/18b7314c13a6d0e82113a15c14e7a5f54286327d.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "nix-project": {
         "branch": "master",
         "description": "Tools to manage a Nix-based project",
@@ -41,10 +29,10 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "aa5b9cd16b91d8a24681c3888951d7c3dc612314",
-        "sha256": "1cyz0xhsy8wa5bf1mh9cind3xvlf5wqz3k4dr9kdhd08wd978f6f",
+        "rev": "808b5dd5cbb79c90f30574186ded950bc12d2b91",
+        "sha256": "0qvaki1vg30czn1f606xnnd09zarv910pgpjkyzjmnckxgykv544",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/aa5b9cd16b91d8a24681c3888951d7c3dc612314.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/808b5dd5cbb79c90f30574186ded950bc12d2b91.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-darwin": {
@@ -53,10 +41,10 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "808b5dd5cbb79c90f30574186ded950bc12d2b91",
-        "sha256": "0qvaki1vg30czn1f606xnnd09zarv910pgpjkyzjmnckxgykv544",
+        "rev": "3d8fa5f72158b866804ab30f42f6937bf25e420f",
+        "sha256": "18l8pdwz5q1fhp6vya0xg2kppfn9hfl8qyjkffklwynkyj61v6ax",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/808b5dd5cbb79c90f30574186ded950bc12d2b91.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/3d8fa5f72158b866804ab30f42f6937bf25e420f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-unstable": {
