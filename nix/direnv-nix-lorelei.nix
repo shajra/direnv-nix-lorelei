@@ -422,7 +422,7 @@ _nixgc_capture_autowatchable()
         # find paths and substitute them for the line
         s/\(copied source\|evaluating file\|trace: lorri read:\)[^']*'\([^']\+\)'.*/\2/;
         # delete /nix/store paths and lines with no found paths
-        /\(^\/nix\/\|^[^\/]\)/d;
+        /^\(\/nix\/\|[^\/]\|$\)/d;
         # print paths found not in /nix/store
         p
     " | {
