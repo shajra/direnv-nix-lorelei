@@ -421,8 +421,8 @@ _nixgc_capture_autowatchable()
     "${gnused}/bin/sed" -n "
         # find paths and substitute them for the line
         s/\(copied source\|evaluating file\|trace: lorri read:\)[^']*'\([^']\+\)'.*/\2/;
-        # delete /nix/store paths and lines with no found paths
-        /\(^\/nix\/\|^[^\/]\)/d;
+        # delete /nix/store paths, lines with no found paths, and empty lines
+        /^\(\/nix\/\|[^\/]\|$\)/d;
         # print paths found not in /nix/store
         p
     " | {
