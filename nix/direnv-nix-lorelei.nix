@@ -328,8 +328,16 @@ _nixgc_rebuild()
     "${coreutils}/bin/mkdir" --parents "$cache_root"
 
     local store_path=()
+    local build_err=()
     _nixgc_build_autowatching \
-        "$shell_file" "$auto_watch_eval" store_path _auto_watch
+        "$shell_file" "$auto_watch_eval" store_path _auto_watch build_err
+    if [ -z "''${store_path[0]}" ]
+    then
+        for l in "''${build_err[@]}"
+        do log_error "$l"
+        done
+         _nixgc_fail "ERROR: Nix build failed"
+    fi
 
     local _pwd;
     _pwd="$(pwd)"
@@ -378,19 +386,29 @@ _nixgc_build_autowatching()
     local shell_file="$1"
     local auto_watch_eval="$2"
     local -n _out="$3"
-    local -n _err="$4"
+    local -n _watched="$4"
+    local -n _build_err="$5"
     local both=()
+    local err=()
     mapfile -t both < <({
         { _nixgc_build "$shell_file" "$auto_watch_eval" \
-            | _nixgc_capture_build_out ;
-        } 3>&1 1>&2 2>&3 | _nixgc_capture_autowatchable ;
+            | _nixgc_capture o ;
+        } 3>&1 1>&2 2>&3 | _nixgc_capture e ;
     } 2>&1)
     # DESIGN: https://github.com/koalaman/shellcheck/issues/817
     # shellcheck disable=SC2034
     mapfile -t _out < <(printf "%s\n" "''${both[@]}" | _nixgc_select_line o)
     # DESIGN: https://github.com/koalaman/shellcheck/issues/817
     # shellcheck disable=SC2034
-    mapfile -t _err < <(printf "%s\n" "''${both[@]}" | _nixgc_select_line e)
+    mapfile -t err < <(printf "%s\n" "''${both[@]}" | _nixgc_select_line e)
+    # DESIGN: https://github.com/koalaman/shellcheck/issues/817
+    # shellcheck disable=SC2034
+    mapfile -t _watched < <(printf "%s\n" "''${err[@]}" \
+        | _nixgc_capture_autowatchable)
+    # DESIGN: https://github.com/koalaman/shellcheck/issues/817
+    # shellcheck disable=SC2034
+    mapfile -t _build_err < <(printf "%s\n" "''${err[@]}" \
+        | "${gnused}/bin/sed" -n '/^error:/,$p')
 }
 
 _nixgc_build()
@@ -399,6 +417,7 @@ _nixgc_build()
     local auto_watch_eval="$2"
     IN_NIX_SHELL=1 \
         nix-build \
+        --show-trace \
         --verbose --verbose \
         --no-out-link \
         --arg src "$shell_file" \
@@ -411,9 +430,11 @@ _nixgc_select_line()
     "${gnused}/bin/sed" -n "s/^$prefix: \(.*\)$/\1/p"
 }
 
-_nixgc_capture_build_out()
+_nixgc_capture()
 {
-    "${gnused}/bin/sed" -n "s/\(.*\)/o: \1/p"
+    local prefix="$1"
+    "${coreutils}/bin/stdbuf" -oL \
+        "${gnused}/bin/sed" -n "s/\(.*\)/$prefix: \1/p"
 }
 
 _nixgc_capture_autowatchable()
@@ -429,8 +450,8 @@ _nixgc_capture_autowatchable()
         while read -r f
         do
             if [ -d "$f" ]
-            then echo "e: $f/default.nix"
-            else echo "e: $f"
+            then echo "$f/default.nix"
+            else echo "$f"
             fi
         done
     } | "${coreutils}/bin/sort" -u
