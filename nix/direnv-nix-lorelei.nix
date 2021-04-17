@@ -365,7 +365,7 @@ _nixgc_rebuild()
     "${findutils}/bin/find" "$cache_root" \
             -type l -wholename "$env_cache-*" -printf "%T+/%p\n" \
         | "${coreutils}/bin/sort" --reverse \
-        | "${coreutils}/bin/tail" "+$(("$keep_last" + 1))" \
+        | "${coreutils}/bin/tail" --lines=+"$(("$keep_last" + 1))" \
         | {
         while read -r line
         do
