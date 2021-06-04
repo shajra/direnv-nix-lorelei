@@ -139,7 +139,7 @@ After a successful call of `nix build`, you'll see one or more symlinks for each
 readlink result*
 ```
 
-    /nix/store/2nyzw664s17jf4fi9dny9g2glwdljrbd-direnv-nix-lorelei
+    /nix/store/5diklral9smnbbgm1f3n0xdvlvynhmq4-direnv-nix-lorelei
 
 Following these symlinks, we can see the files the project provides:
 
@@ -162,7 +162,7 @@ It's common to configure these "result" symlinks as ignored in source control to
 nix path-info --file . direnv-nix-lorelei
 ```
 
-    /nix/store/2nyzw664s17jf4fi9dny9g2glwdljrbd-direnv-nix-lorelei
+    /nix/store/5diklral9smnbbgm1f3n0xdvlvynhmq4-direnv-nix-lorelei
 
 ## Running commands<a id="sec-4-3"></a>
 
@@ -179,14 +179,14 @@ nix run \
     --command direnv --help
 ```
 
-    direnv v2.22.0
+    direnv v2.28.0
     Usage: direnv COMMAND [...ARGS]
     
     Available commands
     ------------------
     …
 
-Thus far, the argument of the `--file` switch has always referenced a Nix file on our local filesystem. However, it's possible to reference a Nix expression downloaded from the internet. The Nix ecosystem is supported by a giant GitHub repository of Nix expressions called [Nixpkgs](https://github.com/NixOS/nixpkgs). Special branches of this repository are considered *channels* in the Nix ecosystem. A Nixpkgs branch of "nixos-20.09" can be referenced by "channel:nixos-20.09" for `nix` subcommands that accept a `--file` switch.
+Thus far, the argument of the `--file` switch has always referenced a Nix file on our local filesystem. However, it's possible to reference a Nix expression downloaded from the internet. The Nix ecosystem is supported by a giant GitHub repository of Nix expressions called [Nixpkgs](https://github.com/NixOS/nixpkgs). Special branches of this repository are considered *channels* in the Nix ecosystem. A Nixpkgs branch of "nixos-21.05" can be referenced by "channel:nixos-21.05" for `nix` subcommands that accept a `--file` switch.
 
 Again, as with `nix build` attribute paths are specified as positional arguments to select packages.
 

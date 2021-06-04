@@ -335,7 +335,7 @@
    #+END_SRC
 
    #+RESULTS: nix-build-link
-   : /nix/store/2nyzw664s17jf4fi9dny9g2glwdljrbd-direnv-nix-lorelei
+   : /nix/store/5diklral9smnbbgm1f3n0xdvlvynhmq4-direnv-nix-lorelei
 
    Following these symlinks, we can see the files the project provides:
 
@@ -365,7 +365,7 @@
    #+END_SRC
 
    #+RESULTS: nix-build-path
-   : /nix/store/2nyzw664s17jf4fi9dny9g2glwdljrbd-direnv-nix-lorelei
+   : /nix/store/5diklral9smnbbgm1f3n0xdvlvynhmq4-direnv-nix-lorelei
 
 ** Running commands
 
@@ -390,7 +390,7 @@
    #+END_SRC
 
    #+RESULTS: nix-run
-   : direnv v2.22.0
+   : direnv v2.28.0
    : Usage: direnv COMMAND [...ARGS]
    : 
    : Available commands

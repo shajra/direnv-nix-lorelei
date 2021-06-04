@@ -6,4 +6,4 @@
  (run-attr       . "direnv")
  (run-name       . "direnv")
  (run-target     . "direnv")
- (nixos-release  . "nixos-20.09"))
+ (nixos-release  . "nixos-21.05"))

@@ -168,7 +168,7 @@ concurrently with Lorelei with no conflicts.
    #+END_SRC
 
    #+RESULTS: direnv-install
-   : installing 'direnv-2.22.0'
+   : installing 'direnv-2.28.0'
 
    If you have =~/.nix-profile/bin= in your environment's =PATH=, you should be
    able to call the =direnv= executable.  Here's a simple way of testing its
@@ -180,7 +180,7 @@ concurrently with Lorelei with no conflicts.
    #+END_SRC
 
    #+RESULTS: direnv-version
-   : 2.22.0
+   : 2.28.0
 
 ** Per-project configuration
 

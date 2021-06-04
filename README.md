@@ -119,7 +119,7 @@ If you don't already have Direnv installed, you have the option of installing Di
 nix-env --install --file . --attr direnv 2>&1
 ```
 
-    installing 'direnv-2.22.0'
+    installing 'direnv-2.28.0'
 
 If you have `~/.nix-profile/bin` in your environment's `PATH`, you should be able to call the `direnv` executable. Here's a simple way of testing its availability.
 
@@ -127,7 +127,7 @@ If you have `~/.nix-profile/bin` in your environment's `PATH`, you should be abl
 direnv version
 ```
 
-    2.22.0
+    2.28.0
 
 ## Per-project configuration<a id="sec-2-5"></a>
 
