@@ -15,12 +15,16 @@ let
     lorri-stock = nixpkgs-stable.applyPatches {
         name = "lorri-stock";
         src = sources.lorri;
+        patches = [./env_name_cleanup.patch];
     };
 
     lorri-patched = nixpkgs-stable.applyPatches {
         name = "lorri-patched";
         src = sources.lorri;
-        patches = [./remove_trace.patch];
+        patches = [
+          ./remove_trace.patch
+          ./env_name_cleanup.patch
+        ];
     };
 
     overlay = super: self: import sources.nix-project // rec {

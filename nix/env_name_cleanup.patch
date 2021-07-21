@@ -1,0 +1,12 @@
+diff --git a/src/logged-evaluation.nix b/src/logged-evaluation.nix
+--- a/src/logged-evaluation.nix
++++ b/src/logged-evaluation.nix
+@@ -55,7 +55,7 @@ let
+   # actual environment from being deleted.
+   keep-env-hack = drv: derivation (
+     drv.drvAttrs // {
+-      name = "lorri-keep-env-hack-${drv.name}";
++      name = "lorelei-${drv.name}";
+
+       origExtraClosure = drv.extraClosure or [];
+       extraClosure = runtimeCfg.closure;
