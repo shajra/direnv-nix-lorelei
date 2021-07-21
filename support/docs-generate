@@ -4,6 +4,7 @@ cd "$(dirname "$0")/.."
 
 nix run \
     --ignore-environment \
+    --keep HOME \
     --keep LANG \
     --keep LOCALE_ARCHIVE \
     --file nix \
