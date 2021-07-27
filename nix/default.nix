@@ -2,23 +2,18 @@ let
 
     sources = import ./sources;
 
-    nixpkgs-stable = import sources.nixpkgs-stable {
+    pkgs = import sources.nixpkgs-stable {
         config    = {};
         overlays = [overlay];
     };
 
-    nixpkgs-unstable = import sources.nixpkgs-unstable {
-        config    = {};
-        overlays = [overlay];
-    };
-
-    lorri-stock = nixpkgs-stable.applyPatches {
+    lorri-stock = pkgs.applyPatches {
         name = "lorri-stock";
         src = sources.lorri;
         patches = [./env_name_cleanup.patch];
     };
 
-    lorri-patched = nixpkgs-stable.applyPatches {
+    lorri-patched = pkgs.applyPatches {
         name = "lorri-patched";
         src = sources.lorri;
         patches = [
@@ -44,12 +39,12 @@ let
             self.callPackage (import ./direnv-nix-lorelei.nix) {};
     };
 
-    direnv-nix-lorelei = nixpkgs-stable.direnv-nix-lorelei;
-    direnv = nixpkgs-stable.direnv;
+    direnv-nix-lorelei = pkgs.direnv-nix-lorelei;
+    direnv = pkgs.direnv;
 
-    lorri-eval-stock = nixpkgs-stable.lorri-eval-stock;
-    lorri-eval-patched = nixpkgs-stable.lorri-eval-patched;
-    lorri-envrc = nixpkgs-stable.lorri-envrc;
+    lorri-eval-stock = pkgs.lorri-eval-stock;
+    lorri-eval-patched = pkgs.lorri-eval-patched;
+    lorri-envrc = pkgs.lorri-envrc;
 
 in {
     inherit
@@ -58,6 +53,5 @@ in {
     lorri-envrc
     lorri-eval-stock
     lorri-eval-patched
-    nixpkgs-stable
-    nixpkgs-unstable;
+    pkgs;
 }

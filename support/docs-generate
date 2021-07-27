@@ -8,12 +8,12 @@ nix run \
     --keep LANG \
     --keep LOCALE_ARCHIVE \
     --file nix \
-    nixpkgs-stable.bash \
-    nixpkgs-stable.coreutils \
-    nixpkgs-stable.gnugrep \
-    nixpkgs-stable.nix-project-org2gfm \
-    nixpkgs-stable.tree \
-    nixpkgs-unstable.ansifilter \
+    pkgs.bash \
+    pkgs.coreutils \
+    pkgs.gnugrep \
+    pkgs.nix-project-org2gfm \
+    pkgs.tree \
+    pkgs.ansifilter \
     --command \
     org2gfm \
     --ignore links.org \

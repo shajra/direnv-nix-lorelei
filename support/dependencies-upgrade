@@ -5,7 +5,7 @@ cd "$(dirname "$0")/.."
 nix run \
     --ignore-environment \
     --file nix \
-    nixpkgs-stable.nix-project-exe \
+    pkgs.nix-project-exe \
     --command \
     nix-project \
     --upgrade \
