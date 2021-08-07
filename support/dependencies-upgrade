@@ -9,6 +9,6 @@ nix run \
     --command \
     nix-project \
     --upgrade \
-    --source-dir nix/sources \
+    --source-dir nix/external \
     --nix "$(command -v nix)" \
     "$@"

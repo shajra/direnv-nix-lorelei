@@ -421,7 +421,7 @@ _nixgc_build()
         --verbose --verbose \
         --no-out-link \
         --arg src "$shell_file" \
-        --expr "((import ${buildSource}).lorri-eval-$auto_watch_eval)"
+        --expr "((import ${buildSource} {}).lorri-eval-$auto_watch_eval)"
 }
 
 _nixgc_select_line()

@@ -7,6 +7,7 @@
 #+LINK: lorelei-song https://www.youtube.com/watch?v=VDw81PRP2SQ
 #+LINK: lorri https://github.com/target/lorri
 #+LINK: nix https://nixos.org/nix
+#+LINK: nix-darwin https://daiderd.com/nix-darwin
 #+LINK: nixdirenv https://github.com/nix-community/nix-direnv
 #+LINK: nix-env https://nixos.org/nix/manual/#sec-nix-env
 #+LINK: nix-expr https://nixos.org/nix/manual/#ch-expression-language
@@ -14,6 +15,7 @@
 #+LINK: nixify https://github.com/kalbasit/nur-packages/blob/master/pkgs/nixify/envrc
 #+LINK: nix-install https://nixos.org/nix/manual/#chap-installation
 #+LINK: nix-learn https://nixos.org/learn.html
+#+LINK: nixos https://nixos.org
 #+LINK: nixpkgs https://github.com/NixOS/nixpkgs
 #+LINK: nixpkgs-manual https://nixos.org/nixpkgs/manual
 #+LINK: nix-tutorial https://github.com/shajra/example-nix/tree/master/tutorials/0-nix-intro

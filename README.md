@@ -1,6 +1,6 @@
 - [About this project](#sec-1)
   - [About Direnv](#sec-1-1)
-  - [About Nix Integration](#sec-1-2)
+  - [About Nix integration](#sec-1-2)
 - [Usage](#sec-2)
   - [Nix package manager setup](#sec-2-1)
   - [Cache setup](#sec-2-2)
@@ -8,8 +8,8 @@
   - [Direnv installation](#sec-2-4)
   - [Per-project configuration](#sec-2-5)
   - [Further configuration](#sec-2-6)
-- [Prior Art](#sec-3)
-- [Known Limitations](#sec-4)
+- [Prior art](#sec-3)
+- [Known limitations](#sec-4)
 - [Release](#sec-5)
 - [License](#sec-6)
 - [Contribution](#sec-7)
@@ -45,7 +45,7 @@ Additionally, many popularly used programming editors have Direnv extensions/plu
 
 Once we set up our editors and shells with Direnv, we can configure our project-specific environment in one place with Direnv. Also, since Nix is far less popularly used than Direnv, we don't have to worry about unsupported Nix integration with our editors or shells. Lorelei can provide all the Nix support we need for Direnv.
 
-## About Nix Integration<a id="sec-1-2"></a>
+## About Nix integration<a id="sec-1-2"></a>
 
 Nix is a package manager (in the same sense as APT, RPM, Homebrew, or Chocolatey). As a package manager, Nix helps us get tools and libraries installed on our system. Nix goes a bit farther, by providing us some facilities to help us get these tools set up in a local environment called a *Nix shell*.
 
@@ -65,21 +65,30 @@ Lorelei should work with either GNU/Linux or MacOS operating systems. Just follo
 
 > **<span class="underline">NOTE:</span>** You don't need this step if you're running NixOS, which comes with Nix baked in.
 
-If you don't already have Nix, the official installation script should work on a variety of UNIX-like operating systems. The easiest way to run this installation script is to execute the following shell command as a user other than root:
+If you don't already have Nix, [the official installation script](https://nixos.org/learn.html) should work on a variety of UNIX-like operating systems:
 
 ```shell
-curl https://nixos.org/nix/install | sh
+sh <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
-This script will download a distribution-independent binary tarball containing Nix and its dependencies, and unpack it in `/nix`.
+If you're on a recent release of MacOS, you will need an extra switch:
+
+```shell
+sh <(curl -L https://nixos.org/nix/install) --daemon \
+    --darwin-use-unencrypted-nix-store-volume
+```
+
+After installation, you may have to exit your terminal session and log back in to have environment variables configured to put Nix executables on your `PATH`.
+
+The `--daemon` switch installs Nix in the recommended multi-user mode. This requires the script to run commands with `sudo`. The script fairly verbosely reports everything it does and touches. If you later want to uninstall Nix, you can run the installation script again, and it will tell you what to do to get back to a clean state.
 
 The Nix manual describes [other methods of installing Nix](https://nixos.org/nix/manual/#chap-installation) that may suit you more.
 
 ## Cache setup<a id="sec-2-2"></a>
 
-It's recommended to configure Nix to use shajra.cachix.org as a Nix *substituter*. This project pushes built Nix packages to [Cachix](https://cachix.org) as part of its continuous integration. Once configured, Nix will pull down these pre-built packages instead of building them locally.
+It's recommended to configure Nix to use shajra.cachix.org as a Nix *substitutor*. This project pushes built Nix packages to [Cachix](https://cachix.org) as part of its continuous integration. Once configured, Nix will pull down these pre-built packages instead of building them locally (potentially saving a lot of time). This augments the default substitutor that pulls from cache.nixos.org.
 
-You can configure shajra.cachix.org as a substituter with the following command:
+You can configure shajra.cachix.org as a substitutor with the following command:
 
 ```shell
 nix run \
@@ -88,9 +97,13 @@ nix run \
     --command cachix use shajra
 ```
 
-This will perform user-local configuration of Nix at `~/.config/nix/nix.conf`. This configuration will be available immediately, and any subsequent invocation of Nix commands will take advantage of the Cachix cache.
+Cachix is a service that anyone can use. You can call this command later to add substitutors for someone else using Cachix, replacing "shajra" with their cache's name.
 
-If you're running NixOS, you can configure Cachix globally by running the above command as a root user. The command will then configure `/etc/nixos/cachix/shajra.nix`, and will output instructions on how to tie this configuration into your NixOS configuration.
+If you've just run a multi-user Nix installation and are not yet a trusted user in `/etc/nix/nix.conf`, this command may not work. But it will report back some options to proceed.
+
+One option sets you up as a trusted user, and installs Cachix configuration for Nix locally at `~/.config/nix/nix.conf`. This configuration will be available immediately, and any subsequent invocation of Nix commands will take advantage of the Cachix cache.
+
+You can alternatively configure Cachix as a substitutor globally by running the above command as a root user (say with `sudo`), which sets up Cachix directly in `/etc/nix/nix.conf`. The invocation may give further instructions upon completion.
 
 ## Installing Lorelei<a id="sec-2-3"></a>
 
@@ -177,15 +190,15 @@ use_nix_gcrooted --help
     
         -h --help                print this help message
         -a --auto-watch-content  watch autodetected files for contect
-    			     changes
+                                 changes
         -A --auto-watch-mtime    watch autodetected files for
-    			     modification times
+                                 modification times
         -d --auto-watch-deep     deeper searching for -a and -A options
         -w --watch-content PATH  watch a file's content for changes
         -W --watch-mtime PATH    watch a file's modification time
         -C --ignore-cache        recompute new environment every time
         -k --keep-last NUM       protect last N caches from GC
-    			     (default 5)
+                                 (default 5)
 
 Direnv needs to know when to consider recalculating an environment's variables. To do this, we need to register files to watch for changes. This is what the "watch" switches above help specify.
 
@@ -219,7 +232,7 @@ We delegate to the [official Direnv documentation](https://direnv.net/#docs) on 
 -   [hooking Direnv into your preferred shell](https://direnv.net/docs/hook.html)
 -   the [Direnv wiki for pages about editor integration](https://github.com/direnv/direnv/wiki#editor-integration).
 
-# Prior Art<a id="sec-3"></a>
+# Prior art<a id="sec-3"></a>
 
 There are four projects that were considered before writing Lorelei:
 
@@ -248,7 +261,7 @@ Lorelei is different from Sorri in two main ways:
 
 Lorri has been relatively active about refining the approach to calculating a Direnv environment, more so than any of the other projects. Sorri copies code, but leads to more work porting changes from Lorri to Sorri. Lorelei uses Nix to use Lorri's code directly. This eases maintenance, but does mean that you *have* to install Lorelei with Nix. However, this is not a bad idea, because Lorelei rigorously pins all of its dependencies, all the way down to `coreutils`. So by installing Lorelei with Nix, we get more precision.
 
-# Known Limitations<a id="sec-4"></a>
+# Known limitations<a id="sec-4"></a>
 
 There's two known limitations of Lorelei:
 

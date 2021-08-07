@@ -1,28 +1,31 @@
+{ externalOverrides ? {}
+}:
+
 let
 
-    sources = import ./sources;
+    external = import ./external // externalOverrides;
 
-    pkgs = import sources.nixpkgs-stable {
+    pkgs = import external.nixpkgs-stable {
         config    = {};
         overlays = [overlay];
     };
 
     lorri-stock = pkgs.applyPatches {
         name = "lorri-stock";
-        src = sources.lorri;
+        src = external.lorri;
         patches = [./env_name_cleanup.patch];
     };
 
     lorri-patched = pkgs.applyPatches {
         name = "lorri-patched";
-        src = sources.lorri;
+        src = external.lorri;
         patches = [
           ./remove_trace.patch
           ./env_name_cleanup.patch
         ];
     };
 
-    overlay = super: self: import sources.nix-project // rec {
+    overlay = super: self: import external.nix-project // rec {
         lorri-runtime =
             self.callPackage
             (import "${lorri-stock}/nix/runtime.nix")

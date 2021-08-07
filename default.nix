@@ -1,4 +1,4 @@
-with (import ./nix);
+with (import ./nix {});
 
 {
     inherit
