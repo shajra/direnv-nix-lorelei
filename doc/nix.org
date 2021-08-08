@@ -360,7 +360,7 @@ have a name prefixed with "result" and point back to the respective build in
 #+END_SRC
 
 #+RESULTS: nix-build-link
-: /nix/store/066niadha2jsx575ql9scca9qd71yalp-direnv-nix-lorelei
+: /nix/store/bi93qrqzk0a1wk5n0pi4v9hcjd4f5vav-direnv-nix-lorelei
 
 Following these symlinks, we can see the files the project provides:
 
@@ -390,7 +390,7 @@ you can use =nix path-info= after a successful build:
 #+END_SRC
 
 #+RESULTS: nix-build-path
-: /nix/store/066niadha2jsx575ql9scca9qd71yalp-direnv-nix-lorelei
+: /nix/store/bi93qrqzk0a1wk5n0pi4v9hcjd4f5vav-direnv-nix-lorelei
 
 ** Running commands
 
