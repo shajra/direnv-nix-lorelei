@@ -67,13 +67,13 @@ Lorelei should work with either GNU/Linux or MacOS operating systems. Just follo
 
 If you don't already have Nix, [the official installation script](https://nixos.org/learn.html) should work on a variety of UNIX-like operating systems:
 
-```shell
+```bash
 sh <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
 If you're on a recent release of MacOS, you will need an extra switch:
 
-```shell
+```bash
 sh <(curl -L https://nixos.org/nix/install) --daemon \
     --darwin-use-unencrypted-nix-store-volume
 ```
@@ -90,7 +90,7 @@ It's recommended to configure Nix to use shajra.cachix.org as a Nix *substitutor
 
 You can configure shajra.cachix.org as a substitutor with the following command:
 
-```shell
+```sh
 nix run \
     --file https://cachix.org/api/v1/install \
     cachix \
@@ -109,7 +109,7 @@ You can alternatively configure Cachix as a substitutor globally by running the 
 
 This project provides a Nix expression in the project's root `default.nix` file. From the root directory of a checkout of the project, you can install Lorelei as follows:
 
-```shell
+```sh
 nix-env --install --file . --attr direnv-nix-lorelei 2>&1
 ```
 
@@ -117,7 +117,7 @@ nix-env --install --file . --attr direnv-nix-lorelei 2>&1
 
 This installation doesn't install a binary, but instead a shell library that you use as configuration for Direnv. Given a typical installation of Nix, this installation should be into the active Nix profile at `~/.nix-profile`. We can tie this library to Direnv with a symlink:
 
-```shell
+```sh
 mkdir --parents ~/.config/direnv/lib
 ln --force --symbolic --no-target-directory \
     ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh \
@@ -128,7 +128,7 @@ ln --force --symbolic --no-target-directory \
 
 If you don't already have Direnv installed, you have the option of installing Direnv from this project (otherwise, you can skip this section):
 
-```shell
+```sh
 nix-env --install --file . --attr direnv 2>&1
 ```
 
@@ -136,7 +136,7 @@ nix-env --install --file . --attr direnv 2>&1
 
 If you have `~/.nix-profile/bin` in your environment's `PATH`, you should be able to call the `direnv` executable. Here's a simple way of testing its availability.
 
-```shell
+```sh
 direnv version
 ```
 
@@ -146,13 +146,13 @@ direnv version
 
 If you have a project that can be used to enter a Nix shell with a call like
 
-```shell
+```sh
 nix-shell "$NIX_FILE"
 ```
 
 for some file `$NIX_FILE`, then at the root of the project you can create a `.envrc` to get started with Direnv:
 
-```shell
+```sh
 echo "use_nix_gcrooted -a \"$NIX_FILE\"" > .envrc
 ```
 
@@ -160,20 +160,21 @@ As with `nix-shell` specifying a Nix file as a positional argument is optional i
 
 Finally, we can activate the configuration (Direnv has some security measures to prevent abuse from running arbitrary scripts):
 
-```shell
+```sh
 direnv allow
 ```
 
 At this point, if you have your terminal and editor configured to use Direnv, you should experience per-project environments serviced by Direnv.
 
-To learn more more about Lorelei's options, we can source the script and run the function outside Direnv:
+To learn more more about Lorelei's options, we can source the script and run the function outside Direnv. However, we need to be in a Bash shell:
 
-```shell
-. ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh
-use_nix_gcrooted --help
+```sh
+bash -c "
+    . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh
+    use_nix_gcrooted --help
+"
 ```
 
-    
     USAGE: use_nix_gcrooted [OPTION]... [FILE]
     
     DESCRIPTION:
@@ -251,7 +252,7 @@ Also Lorri inspects Nix's build log to automatically detect which files need to 
 
 Running a background process can be a heavy extra process, and introduces the surface area of complexity and exposure to defects (though the Lorri committers have been committed to fixing them). All of the other projects are lighter-weight than Lorri in this regard. They are just scripts with no requirements on a background process.
 
-Sorri copies a lot of code from Lorri, but removes the background process. So when you enter into a Direnv directory, you will always experience the evaluation time of calculating a not-yet-cached Direnv environment. With Lorri this evaluation occurs in the background.
+Sorri copies a lot of code from Lorri, but removes the background process. So when you enter a Direnv directory, you will always experience the evaluation time of calculating a not-yet-cached Direnv environment. With Lorri this evaluation occurs in the background.
 
 Lorelei is different from Sorri in two main ways:
 
@@ -276,9 +277,9 @@ Also, soon to be released in a new version of Nix are [Nix flakes](https://nixos
 
 # Release<a id="sec-5"></a>
 
-The "master" branch of the repository on GitHub has the latest released version of this code. There is currently no commitment to either forward or backward compatibility.
+The "main" branch of the repository on GitHub has the latest released version of this code. There is currently no commitment to either forward or backward compatibility.
 
-"user/shajra" branches are personal branches that may be force-pushed to. The "master" branch should not experience force-pushes and is recommended for general use.
+"user/shajra" branches are personal branches that may be force-pushed to. The "main" branch should not experience force-pushes and is recommended for general use.
 
 # License<a id="sec-6"></a>
 

@@ -5,43 +5,52 @@
 
 * Org-mode setup :noexport:
 
+** Formatting help
+
+This snippet can be used as a post-processing step to crop down the results from
+an evaluation of a source code block.
+
+#+NAME: drop
+#+BEGIN_SRC emacs-lisp :var text="" :var n-dropped=0 :results silent
+(string-join (-drop n-dropped (split-string text "\n")) "\n")
+#+END_SRC
+
 ** Setup action
 
 The following helps (using Noweb) set up Nix environment variables for source
 block evaluation.
 
 #+NAME: nix-init
-#+BEGIN_SRC shell :eval no
-  export NIX_PROFILE=$(pwd)/nix-profile
-  export NIX_PAGER=cat
-  export PATH="$NIX_PROFILE/bin:$PATH"
-  export PS1='$ '
+#+BEGIN_SRC sh :eval no
+export NIX_PROFILE=$(pwd)/nix-profile
+export NIX_PAGER=cat
+export PATH="$NIX_PROFILE/bin:$PATH"
 #+END_SRC
 
 Next we perform some side-effects to set up the evaluation of the whole
 document.
 
 #+NAME: cleanup
-#+BEGIN_SRC shell :results output silent :noweb yes
-  <<nix-init>>
-  rm --force result* || true
-  rm --force "$NIX_PROFILE"* || true
+#+BEGIN_SRC sh :results output silent :noweb yes
+<<nix-init>>
+rm --force result*
+rm --force "$NIX_PROFILE"*
 #+END_SRC
 
 This is just a hack to deal with the fact that we never know what directory a
 session will start in, so we need a way to calculate the PWD to jump to it.
 
 #+NAME: pwd
-#+BEGIN_SRC shell :results output silent
-  echo cd "$(pwd)"
+#+BEGIN_SRC sh :results output silent
+echo cd "$(pwd)"
 #+END_SRC
 
 This begins a session with environment variables initialized.
 
 #+NAME: session-init
-#+BEGIN_SRC bash :session env :results output silent :noweb yes
-  <<pwd()>>
-  <<nix-init>>
+#+BEGIN_SRC sh :session env :results output silent :noweb yes
+<<pwd()>>
+<<nix-init>>
 #+END_SRC
 
 * About this project
@@ -137,8 +146,8 @@ From the root directory of a checkout of the project, you can install Lorelei as
 follows:
 
 #+NAME: lorelei-install
-#+BEGIN_SRC shell :session env :results output :exports both
-  nix-env --install --file . --attr direnv-nix-lorelei 2>&1
+#+BEGIN_SRC sh :session env :results output :exports both
+nix-env --install --file . --attr direnv-nix-lorelei 2>&1
 #+END_SRC
 
 #+RESULTS: lorelei-install
@@ -149,11 +158,11 @@ use as configuration for Direnv. Given a typical installation of Nix, this
 installation should be into the active Nix profile at =~/.nix-profile=. We can
 tie this library to Direnv with a symlink:
 
-#+BEGIN_SRC shell :eval no
-  mkdir --parents ~/.config/direnv/lib
-  ln --force --symbolic --no-target-directory \
-      ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh \
-      ~/.config/direnv/lib
+#+BEGIN_SRC sh :eval no
+mkdir --parents ~/.config/direnv/lib
+ln --force --symbolic --no-target-directory \
+    ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh \
+    ~/.config/direnv/lib
 #+END_SRC
 
 ** Direnv installation
@@ -162,8 +171,8 @@ If you don't already have Direnv installed, you have the option of installing
 Direnv from this project (otherwise, you can skip this section):
 
 #+NAME: direnv-install
-#+BEGIN_SRC shell :session env :results output :exports both
-  nix-env --install --file . --attr direnv 2>&1
+#+BEGIN_SRC sh :session env :results output :exports both
+nix-env --install --file . --attr direnv 2>&1
 #+END_SRC
 
 #+RESULTS: direnv-install
@@ -174,8 +183,8 @@ able to call the =direnv= executable. Here's a simple way of testing its
 availability.
 
 #+NAME: direnv-version
-#+BEGIN_SRC shell :session env :results output :exports both
-  direnv version
+#+BEGIN_SRC sh :session env :results output :exports both
+direnv version
 #+END_SRC
 
 #+RESULTS: direnv-version
@@ -185,15 +194,15 @@ availability.
 
 If you have a project that can be used to enter a Nix shell with a call like
 
-#+BEGIN_SRC shell :eval no
-  nix-shell "$NIX_FILE"
+#+BEGIN_SRC sh :eval no
+nix-shell "$NIX_FILE"
 #+END_SRC
 
 for some file =$NIX_FILE=, then at the root of the project you can create a
 =.envrc= to get started with Direnv:
 
-#+BEGIN_SRC shell :eval no
-  echo "use_nix_gcrooted -a \"$NIX_FILE\"" > .envrc
+#+BEGIN_SRC sh :eval no
+echo "use_nix_gcrooted -a \"$NIX_FILE\"" > .envrc
 #+END_SRC
 
 As with =nix-shell= specifying a Nix file as a positional argument is optional
@@ -203,30 +212,35 @@ but use =default.nix= it is also optional.
 Finally, we can activate the configuration (Direnv has some security measures to
 prevent abuse from running arbitrary scripts):
 
-#+BEGIN_SRC shell :eval no
-  direnv allow
+#+BEGIN_SRC sh :eval no
+direnv allow
 #+END_SRC
 
 At this point, if you have your terminal and editor configured to use Direnv,
 you should experience per-project environments serviced by Direnv.
 
 To learn more more about Lorelei's options, we can source the script and run the
-function outside Direnv:
+function outside Direnv. However, we need to be in a Bash shell:
 
-#+BEGIN_SRC shell :eval no
-  . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh
-  use_nix_gcrooted --help
+#+BEGIN_SRC sh :eval no
+bash -c "
+    . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh
+    use_nix_gcrooted --help
+"
 #+END_SRC
 
 #+NAME: help
-#+BEGIN_SRC shell :session env :results output :exports results
-  . "$NIX_PROFILE/share/direnv-nix-lorelei/nix-lorelei.sh"
-  use_nix_gcrooted --help
+#+BEGIN_SRC sh :session env :results output :exports results :post drop(text=*this*, n-dropped=2)
+# DESIGN: dropping lines with post processing, and echoing a blank line is a
+# hack to deal with the PS2 prompt confusing Org evaluation
+bash -c "
+    . \"$NIX_PROFILE/share/direnv-nix-lorelei/nix-lorelei.sh\"
+    echo; use_nix_gcrooted --help
+"
 #+END_SRC
 
 #+RESULTS: help
 #+begin_example
-
 USAGE: use_nix_gcrooted [OPTION]... [FILE]
 
 DESCRIPTION:
@@ -344,10 +358,10 @@ have been committed to fixing them). All of the other projects are
 lighter-weight than Lorri in this regard. They are just scripts with no
 requirements on a background process.
 
-Sorri copies a lot of code from Lorri, but removes the background process.  So
-when you enter into a Direnv directory, you will always experience the
-evaluation time of calculating a not-yet-cached Direnv environment.  With
-Lorri this evaluation occurs in the background.
+Sorri copies a lot of code from Lorri, but removes the background process. So
+when you enter a Direnv directory, you will always experience the evaluation
+time of calculating a not-yet-cached Direnv environment. With Lorri this
+evaluation occurs in the background.
 
 Lorelei is different from Sorri in two main ways:
 
@@ -396,12 +410,12 @@ something we had not tested ourselves.
 
 * Release
 
-The "master" branch of the repository on GitHub has the latest released version
+The "main" branch of the repository on GitHub has the latest released version
 of this code. There is currently no commitment to either forward or backward
 compatibility.
 
 "user/shajra" branches are personal branches that may be force-pushed to. The
-"master" branch should not experience force-pushes and is recommended for
+"main" branch should not experience force-pushes and is recommended for
 general use.
 
 * License

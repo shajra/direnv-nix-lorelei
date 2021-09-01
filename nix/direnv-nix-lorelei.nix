@@ -171,32 +171,29 @@ _nixgc_parse_args()
             _auto_watch_eval=stock
             ;;
         -k|--keep-last)
-            local asked_keep_last="''${2:-}"
-            if [ -z "$asked_keep_last" ]
+            if [ -z "''${2:-}" ]
             then
                 _nixgc_fail "$1 requires argument"
             fi
             # DESIGN: https://github.com/koalaman/shellcheck/issues/817
             # shellcheck disable=SC2034
-            _keep_last="$asked_keep_last"
+            _keep_last="''${2:-}"
             shift
             ;;
         -w|--watch-content)
-            local next_by_hash="''${2:-}"
-            if [ -z "$next_by_hash" ]
+            if [ -z "''${2:-}" ]
             then
                 _nixgc_fail "$1 requires argument"
             fi
-            _watched_by_hash+=("$next_by_hash")
+            _watched_by_hash+=("''${2:-}")
             shift
             ;;
         -W|--watch-mtime)
-            local next_by_mtime="''${2:-}"
-            if [ -z "$next_by_mtime" ]
+            if [ -z "''${2:-}" ]
             then
                 _nixgc_fail "$1 requires argument"
             fi
-            _watched_by_mtime+=("$next_by_mtime")
+            _watched_by_mtime+=("''${2:-}")
             shift
             ;;
         *)

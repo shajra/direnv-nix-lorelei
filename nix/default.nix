@@ -40,6 +40,7 @@ let
             "${lorri-stock}/src/ops/direnv/envrc.bash";
         direnv-nix-lorelei =
             self.callPackage (import ./direnv-nix-lorelei.nix) {};
+        direnv-nix-lorelei-home = ./home-manager.nix;
     };
 
     direnv-nix-lorelei = pkgs.direnv-nix-lorelei;
@@ -49,12 +50,4 @@ let
     lorri-eval-patched = pkgs.lorri-eval-patched;
     lorri-envrc = pkgs.lorri-envrc;
 
-in {
-    inherit
-    direnv
-    direnv-nix-lorelei
-    lorri-envrc
-    lorri-eval-stock
-    lorri-eval-patched
-    pkgs;
-}
+in pkgs
