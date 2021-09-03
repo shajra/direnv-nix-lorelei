@@ -27,6 +27,6 @@ in {
 
     config = mkIf cfg.enable {
         xdg.configFile."direnv/lib/nix-lorelei.sh".source =
-            "${cfg.package}/share/direnv-nix-lorelei/nix-lorelei.sh";
+            "${cfg.package}/share/direnv-nix-lorelei/nix-lorelei.bash";
     };
 }

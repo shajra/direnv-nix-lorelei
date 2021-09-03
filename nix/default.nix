@@ -41,13 +41,13 @@ let
         direnv-nix-lorelei =
             self.callPackage (import ./direnv-nix-lorelei.nix) {};
         direnv-nix-lorelei-home = ./home-manager.nix;
+        direnv-nix-lorelei-dist = {
+            inherit (self)
+                direnv;
+            inherit
+                direnv-nix-lorelei
+                direnv-nix-lorelei-home;
+        };
     };
-
-    direnv-nix-lorelei = pkgs.direnv-nix-lorelei;
-    direnv = pkgs.direnv;
-
-    lorri-eval-stock = pkgs.lorri-eval-stock;
-    lorri-eval-patched = pkgs.lorri-eval-patched;
-    lorri-envrc = pkgs.lorri-envrc;
 
 in pkgs

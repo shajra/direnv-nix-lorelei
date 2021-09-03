@@ -1,8 +1,1 @@
-with (import ./nix {});
-
-{
-    inherit
-    direnv
-    direnv-nix-lorelei
-    direnv-nix-lorelei-home;
-}
+(import ./nix {}).direnv-nix-lorelei-dist

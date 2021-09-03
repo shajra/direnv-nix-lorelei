@@ -120,8 +120,8 @@ This installation doesn't install a binary, but instead a shell library that you
 ```sh
 mkdir --parents ~/.config/direnv/lib
 ln --force --symbolic --no-target-directory \
-    ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh \
-    ~/.config/direnv/lib
+    ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.bash \
+    ~/.config/direnv/lib/nix-lorelei.sh
 ```
 
 ## Direnv installation<a id="sec-2-4"></a>
@@ -170,7 +170,7 @@ To learn more more about Lorelei's options, we can source the script and run the
 
 ```sh
 bash -c "
-    . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh
+    . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.bash
     use_nix_gcrooted --help
 "
 ```

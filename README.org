@@ -161,8 +161,8 @@ tie this library to Direnv with a symlink:
 #+BEGIN_SRC sh :eval no
 mkdir --parents ~/.config/direnv/lib
 ln --force --symbolic --no-target-directory \
-    ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh \
-    ~/.config/direnv/lib
+    ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.bash \
+    ~/.config/direnv/lib/nix-lorelei.sh
 #+END_SRC
 
 ** Direnv installation
@@ -224,7 +224,7 @@ function outside Direnv. However, we need to be in a Bash shell:
 
 #+BEGIN_SRC sh :eval no
 bash -c "
-    . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.sh
+    . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.bash
     use_nix_gcrooted --help
 "
 #+END_SRC
@@ -234,7 +234,7 @@ bash -c "
 # DESIGN: dropping lines with post processing, and echoing a blank line is a
 # hack to deal with the PS2 prompt confusing Org evaluation
 bash -c "
-    . \"$NIX_PROFILE/share/direnv-nix-lorelei/nix-lorelei.sh\"
+    . \"$NIX_PROFILE/share/direnv-nix-lorelei/nix-lorelei.bash\"
     echo; use_nix_gcrooted --help
 "
 #+END_SRC
