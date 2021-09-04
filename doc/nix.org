@@ -369,7 +369,7 @@ readlink result*
 #+END_SRC
 
 #+RESULTS: nix-build-link
-: /nix/store/mp9grbpi1y30nj455xigc3xlw67sk7y1-direnv-nix-lorelei
+: /nix/store/nfv0xbq3fmndgrmf3xdz5fi95nwfzdxp-direnv-nix-lorelei
 
 Following these symlinks, we can see the files the project provides:
 
@@ -399,7 +399,7 @@ nix path-info --file . <<get("package-attr")>>
 #+END_SRC
 
 #+RESULTS: nix-build-path
-: /nix/store/mp9grbpi1y30nj455xigc3xlw67sk7y1-direnv-nix-lorelei
+: /nix/store/nfv0xbq3fmndgrmf3xdz5fi95nwfzdxp-direnv-nix-lorelei
 
 ** Running commands
 

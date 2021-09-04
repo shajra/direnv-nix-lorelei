@@ -5,18 +5,20 @@ let
 
     external = import ./external // externalOverrides;
 
-    pkgs = import external.nixpkgs-stable {
+    nix-project = import external.nix-project;
+
+    nixpkgs = import external.nixpkgs-stable {
         config    = {};
         overlays = [overlay];
     };
 
-    lorri-stock = pkgs.applyPatches {
+    lorri-stock = nixpkgs.applyPatches {
         name = "lorri-stock";
         src = external.lorri;
         patches = [./env_name_cleanup.patch];
     };
 
-    lorri-patched = pkgs.applyPatches {
+    lorri-patched = nixpkgs.applyPatches {
         name = "lorri-patched";
         src = external.lorri;
         patches = [
@@ -25,7 +27,7 @@ let
         ];
     };
 
-    overlay = super: self: import external.nix-project // rec {
+    overlay = super: self: nix-project // rec {
         lorri-runtime =
             self.callPackage
             (import "${lorri-stock}/nix/runtime.nix")
@@ -41,13 +43,13 @@ let
         direnv-nix-lorelei =
             self.callPackage (import ./direnv-nix-lorelei.nix) {};
         direnv-nix-lorelei-home = ./home-manager.nix;
-        direnv-nix-lorelei-dist = {
-            inherit (self)
-                direnv;
-            inherit
-                direnv-nix-lorelei
-                direnv-nix-lorelei-home;
-        };
     };
 
-in pkgs
+    distribution = {
+        inherit (nixpkgs)
+        direnv
+        direnv-nix-lorelei
+        direnv-nix-lorelei-home;
+    };
+
+in { inherit distribution nix-project nixpkgs; }

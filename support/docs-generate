@@ -7,12 +7,12 @@ nix run \
     --keep LANG \
     --keep LOCALE_ARCHIVE \
     --file nix \
-    nix-project-org2gfm \
-    ansifilter \
-    bash \
-    coreutils \
-    gnugrep \
-    tree \
+    nix-project.nix-project-org2gfm \
+    nixpkgs.ansifilter \
+    nixpkgs.bash \
+    nixpkgs.coreutils \
+    nixpkgs.gnugrep \
+    nixpkgs.tree \
     --command \
     org2gfm \
     --path-bin \
