@@ -17,7 +17,7 @@ in {
             };
             package = mkOption {
                 type = types.package;
-                default = (import ./.).direnv-nix-lorelei;
+                default = (import ./. {}).distribution.direnv-nix-lorelei;
                 description = ''
                     The <literal>direnv-nix-lorelei</literal> package to use.
                 '';
