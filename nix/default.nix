@@ -42,7 +42,7 @@ let
             "${lorri-stock}/src/ops/direnv/envrc.bash";
         direnv-nix-lorelei =
             self.callPackage (import ./direnv-nix-lorelei.nix) {};
-        direnv-nix-lorelei-home = ./home-manager.nix;
+        direnv-nix-lorelei-home = ./home.nix;
     };
 
     distribution = {
