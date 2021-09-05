@@ -1,5 +1,5 @@
-#+TITLE: Lorelei, an Alternative Nix extension of Direnv
-#+SETUPFILE: doc/links.org
+#+title: Lorelei, an Alternative Nix extension of Direnv
+#+setupfile: doc/links.org
 
 [[https://github.com/shajra/direnv-nix-lorelei/actions][https://github.com/shajra/direnv-nix-lorelei/workflows/CI/badge.svg]]
 
@@ -10,48 +10,48 @@
 This snippet can be used as a post-processing step to crop down the results from
 an evaluation of a source code block.
 
-#+NAME: drop
-#+BEGIN_SRC emacs-lisp :var text="" :var n-dropped=0 :results silent
+#+name: drop
+#+begin_src emacs-lisp :var text="" :var n-dropped=0 :results silent
 (string-join (-drop n-dropped (split-string text "\n")) "\n")
-#+END_SRC
+#+end_src
 
 ** Setup action
 
 The following helps (using Noweb) set up Nix environment variables for source
 block evaluation.
 
-#+NAME: nix-init
-#+BEGIN_SRC sh :eval no
+#+name: nix-init
+#+begin_src sh :eval no
 export NIX_PROFILE=$(pwd)/nix-profile
 export NIX_PAGER=cat
 export PATH="$NIX_PROFILE/bin:$PATH"
-#+END_SRC
+#+end_src
 
 Next we perform some side-effects to set up the evaluation of the whole
 document.
 
-#+NAME: cleanup
-#+BEGIN_SRC sh :results output silent :noweb yes
+#+name: cleanup
+#+begin_src sh :results output silent :noweb yes
 <<nix-init>>
 rm --force result*
 rm --force "$NIX_PROFILE"*
-#+END_SRC
+#+end_src
 
 This is just a hack to deal with the fact that we never know what directory a
 session will start in, so we need a way to calculate the PWD to jump to it.
 
-#+NAME: pwd
-#+BEGIN_SRC sh :results output silent
+#+name: pwd
+#+begin_src sh :results output silent
 echo cd "$(pwd)"
-#+END_SRC
+#+end_src
 
 This begins a session with environment variables initialized.
 
-#+NAME: session-init
-#+BEGIN_SRC sh :session env :results output silent :noweb yes
+#+name: session-init
+#+begin_src sh :session env :results output silent :noweb yes
 <<pwd()>>
 <<nix-init>>
-#+END_SRC
+#+end_src
 
 * About this project
 
@@ -153,9 +153,9 @@ The following sections cover both these options. Home Manager introduces its own
 complexity and added work for configuration. But there can be a nice payoff if
 you opt to use Home Manager to manage more than just Lorelei.
 
-#+INCLUDE: "doc/nix.org::*Nix package manager setup"
+#+include: "doc/nix.org::*Nix package manager setup"
 
-#+INCLUDE: "doc/nix.org::*Cache setup"
+#+include: "doc/nix.org::*Cache setup"
 
 ** Installation via =nix-env=
 :PROPERTIES:
@@ -174,24 +174,24 @@ section on installation with Home manager]].
 If you don't already have Direnv installed, you have the option of installing
 Direnv from this project (otherwise, you can skip this step):
 
-#+NAME: direnv-install
-#+BEGIN_SRC sh :session env :results output :exports both
+#+name: direnv-install
+#+begin_src sh :session env :results output :exports both
 nix-env --install --file . --attr direnv 2>&1
-#+END_SRC
+#+end_src
 
-#+RESULTS: direnv-install
+#+results: direnv-install
 : installing 'direnv-2.28.0'
 
 If you have =~/.nix-profile/bin= in your environment's =PATH=, you should be
 able to call the =direnv= executable. Here's a simple way of testing its
 availability.
 
-#+NAME: direnv-version
-#+BEGIN_SRC sh :session env :results output :exports both
+#+name: direnv-version
+#+begin_src sh :session env :results output :exports both
 direnv version
-#+END_SRC
+#+end_src
 
-#+RESULTS: direnv-version
+#+results: direnv-version
 : 2.28.0
 
 *** Installing Lorelei
@@ -200,12 +200,12 @@ This project provides a Nix expression in the project's root =default.nix= file.
 From the root directory of a checkout of the project, you can install Lorelei as
 follows:
 
-#+NAME: lorelei-install
-#+BEGIN_SRC sh :session env :results output :exports both
+#+name: lorelei-install
+#+begin_src sh :session env :results output :exports both
 nix-env --install --file . --attr direnv-nix-lorelei 2>&1
-#+END_SRC
+#+end_src
 
-#+RESULTS: lorelei-install
+#+results: lorelei-install
 : installing 'direnv-nix-lorelei'
 
 This installation doesn't install a binary, but instead a shell library that you
@@ -213,12 +213,12 @@ use as configuration for Direnv. Given a typical installation of Nix, this
 installation should be into the active Nix profile at =~/.nix-profile=. We can
 tie this library to Direnv with a symlink:
 
-#+BEGIN_SRC sh :eval no
+#+begin_src sh :eval no
 mkdir --parents ~/.config/direnv/lib
 ln --force --symbolic --no-target-directory \
     ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.bash \
     ~/.config/direnv/lib/nix-lorelei.sh
-#+END_SRC
+#+end_src
 
 ** Installation via Home Manager
 :PROPERTIES:
@@ -243,7 +243,7 @@ In our case, this project provides a module at the /attribute path/
 Manager, we'll import this module, and then enable the provided options. Here's
 an commented example of such a configuration:
 
-#+BEGIN_SRC nix :eval no
+#+begin_src nix :eval no
 { config, pkgs, lib, ... }:
 
 let
@@ -287,7 +287,7 @@ in
     # $XDG_CONFIG_HOME/direnv/lib to enable Lorelei's usage with Direnv.
     programs.direnv-nix-lorelei.enable = true;
 }
-#+END_SRC
+#+end_src
 
 Not completely illustrated in the above example, the Lorelei Home Manager module
 provides two options:
@@ -326,16 +326,16 @@ configuration. Specifically, have a look at
 
 If you have a project that can be used to enter a Nix shell with a call like
 
-#+BEGIN_SRC sh :eval no
+#+begin_src sh :eval no
 nix-shell "$NIX_FILE"
-#+END_SRC
+#+end_src
 
 for some file =$NIX_FILE=, then at the root of the project you can create a
 =.envrc= to get started with Direnv:
 
-#+BEGIN_SRC sh :eval no
+#+begin_src sh :eval no
 echo "use_nix_gcrooted -a \"$NIX_FILE\"" > .envrc
-#+END_SRC
+#+end_src
 
 As with =nix-shell= specifying a Nix file as a positional argument is optional
 if you're file is called =shell.nix=. Furthermore, if you don't use =shell.nix=,
@@ -344,9 +344,9 @@ but use =default.nix= it is also optional.
 Finally, we can activate the configuration (Direnv has some security measures to
 prevent abuse from running arbitrary scripts):
 
-#+BEGIN_SRC sh :eval no
+#+begin_src sh :eval no
 direnv allow
-#+END_SRC
+#+end_src
 
 At this point, if you have your terminal and editor configured to use Direnv,
 you should experience per-project environments serviced by Direnv.
@@ -354,24 +354,24 @@ you should experience per-project environments serviced by Direnv.
 To learn more more about Lorelei's options, we can source the script and run the
 function outside Direnv. However, we need to be in a Bash shell:
 
-#+BEGIN_SRC sh :eval no
+#+begin_src sh :eval no
 bash -c "
     . ~/.nix-profile/share/direnv-nix-lorelei/nix-lorelei.bash
     use_nix_gcrooted --help
 "
-#+END_SRC
+#+end_src
 
-#+NAME: help
-#+BEGIN_SRC sh :session env :results output :exports results :post drop(text=*this*, n-dropped=2)
+#+name: help
+#+begin_src sh :session env :results output :exports results :post drop(text=*this*, n-dropped=2)
 # DESIGN: dropping lines with post processing, and echoing a blank line is a
 # hack to deal with the PS2 prompt confusing Org evaluation
 bash -c "
     . \"$NIX_PROFILE/share/direnv-nix-lorelei/nix-lorelei.bash\"
     echo; use_nix_gcrooted --help
 "
-#+END_SRC
+#+end_src
 
-#+RESULTS: help
+#+results: help
 #+begin_example
 USAGE: use_nix_gcrooted [OPTION]... [FILE]
 
@@ -556,4 +556,4 @@ Copyright © 2020 Sukant Hajra
 
 * Org-mode teardown :noexport:
 
-#+CALL: cleanup()
+#+call: cleanup()
