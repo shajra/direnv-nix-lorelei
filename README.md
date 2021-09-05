@@ -1,18 +1,21 @@
 - [About this project](#sec-1)
   - [About Direnv](#sec-1-1)
   - [About Nix integration](#sec-1-2)
-- [Usage](#sec-2)
+- [Installation](#sec-2)
   - [Nix package manager setup](#sec-2-1)
   - [Cache setup](#sec-2-2)
-  - [Installing Lorelei](#sec-2-3)
-  - [Direnv installation](#sec-2-4)
-  - [Per-project configuration](#sec-2-5)
-  - [Further configuration](#sec-2-6)
-- [Prior art](#sec-3)
-- [Known limitations](#sec-4)
-- [Release](#sec-5)
-- [License](#sec-6)
-- [Contribution](#sec-7)
+  - [Installation via `nix-env`](#install-nixenv)
+    - [Direnv installation](#sec-2-3-1)
+    - [Installing Lorelei](#sec-2-3-2)
+  - [Installation via Home Manager](#install-homemanager)
+- [Configuration and usage](#sec-3)
+  - [Terminal and editor configuration](#sec-3-1)
+  - [Per-project configuration](#sec-3-2)
+- [Prior art](#sec-4)
+- [Known limitations](#sec-5)
+- [Release](#sec-6)
+- [License](#sec-7)
+- [Contribution](#sec-8)
 
 [![img](https://github.com/shajra/direnv-nix-lorelei/workflows/CI/badge.svg)](https://github.com/shajra/direnv-nix-lorelei/actions)
 
@@ -39,7 +42,7 @@ Note, Lorelei only works with projects that have a Nix file that can be called w
 
 When we go into a project's directory we often want certain environment variables set specifically to a project's needs. A very common environment variable to specify per-project is `PATH` to make available development tools needed by a project. Different projects may depend on conflicting tools, such as different versions of a compiler.
 
-Direnv targets solving this problem. Once you set it up, you can hook your terminal shell to automatically load variables based upon your current working directory. Then, when you `cd` into the directory, and the variables change automatically.
+Direnv targets solving this problem. Once you set it up, you can hook your terminal shell to automatically load variables based upon your current working directory. Then, when you `cd` into the directory, the variables change automatically.
 
 Additionally, many popularly used programming editors have Direnv extensions/plugins. Rather than use editor-specific configuration to treat each project differently, we can configure these projects with Direnv. Any editor configured with a Direnv extension/plugin will then pick up the right environment based on the project of the edited file.
 
@@ -57,9 +60,21 @@ Direnv actually comes with Nix support built-in, but this support is very basic.
 
 See [the provided documentation on Nix](doc/nix.md) for more on what Nix is, why we're motivated to use it, and how to get set up with it for this project. Not covered in this documentation are details on how to set make a Nix expression to set up a Nix shell. There's just a lot of ways to do this for each programming langauge, and the [official Nixpkgs manual](https://nixos.org/nixpkgs/manual) is the best resource.
 
-# Usage<a id="sec-2"></a>
+# Installation<a id="sec-2"></a>
 
-Lorelei should work with either GNU/Linux or MacOS operating systems. Just follow the following steps.
+Lorelei should work with either GNU/Linux or MacOS operating systems. Before we can configure specific projects/directories to use Direnv and Lorelei, we need to do the following:
+
+1.  install and configure Nix, if we haven't already
+2.  install Direnv
+3.  install Lorelei
+4.  create a symlink under `$XDG_CONFIG_HOME/direnv/lib` pointing to Lorelei's installed Bash functions.
+
+Beyond the installation of Nix, we have two ways to install packages and create the symlink:
+
+-   use `nix-env` and create the symlink ourselves
+-   use [Home Manager](https://github.com/nix-community/home-manager) to manage both packages and home directory configuration (including the symlink under under `$XDG_CONFIG_HOME/direnv/lib`).
+
+The following sections cover both these options. Home Manager introduces its own complexity and added work for configuration. But there can be a nice payoff if you opt to use Home Manager to manage more than just Lorelei.
 
 ## Nix package manager setup<a id="sec-2-1"></a>
 
@@ -105,7 +120,31 @@ One option sets you up as a trusted user, and installs Cachix configuration for 
 
 You can alternatively configure Cachix as a substitutor globally by running the above command as a root user (say with `sudo`), which sets up Cachix directly in `/etc/nix/nix.conf`. The invocation may give further instructions upon completion.
 
-## Installing Lorelei<a id="sec-2-3"></a>
+## Installation via `nix-env`<a id="install-nixenv"></a>
+
+This section covers the option of installing packages with `nix-env`, and not with Home Manager. If you're not as familiar with `nix-env`, you may be interested in this project's [supplemental documentation on Nix](doc/nix.md).
+
+If you've installed Home Manager, you may skip this section and try out [the next section on installation with Home manager](#install-homemanager).
+
+### Direnv installation<a id="sec-2-3-1"></a>
+
+If you don't already have Direnv installed, you have the option of installing Direnv from this project (otherwise, you can skip this step):
+
+```sh
+nix-env --install --file . --attr direnv 2>&1
+```
+
+    installing 'direnv-2.28.0'
+
+If you have `~/.nix-profile/bin` in your environment's `PATH`, you should be able to call the `direnv` executable. Here's a simple way of testing its availability.
+
+```sh
+direnv version
+```
+
+    2.28.0
+
+### Installing Lorelei<a id="sec-2-3-2"></a>
 
 This project provides a Nix expression in the project's root `default.nix` file. From the root directory of a checkout of the project, you can install Lorelei as follows:
 
@@ -124,25 +163,85 @@ ln --force --symbolic --no-target-directory \
     ~/.config/direnv/lib/nix-lorelei.sh
 ```
 
-## Direnv installation<a id="sec-2-4"></a>
+## Installation via Home Manager<a id="install-homemanager"></a>
 
-If you don't already have Direnv installed, you have the option of installing Direnv from this project (otherwise, you can skip this section):
+This section is for those those who are interested in Home Manager, and skipped [the prior section](#install-nixenv) on how to install the needed packages with `nix-env` and create the needed symlink directly with `ln`.
 
-```sh
-nix-env --install --file . --attr direnv 2>&1
+Detailed instructions on the installation of Home Manager are beyond the scope of this document. Please refer to [Home Manager's manual](https://rycee.gitlab.io/home-manager/).
+
+Home Manager is configured with NixOS-style modules. These modules are Nix functions of a certain form. Modules can import other modules by their path. Some modules provide an configuration options, which are then imported by other modules on the user's side where these options are then employed to configure a particular machine.
+
+In our case, this project provides a module at the *attribute path* `direnv-nix-lorelei-home`. To configure a machine with Lorelei using Home Manager, we'll import this module, and then enable the provided options. Here's an commented example of such a configuration:
+
+```nix
+{ config, pkgs, lib, ... }:
+
+let
+
+    # First we have to get the Lorelei source code from GitHub.
+
+    # Unfortunately, can't use pkgs from above (infinite recursion)
+    pkgs-bootstrap = import <nixpkgs> { config = {}; overlays = []; };
+
+    lorelei-source = pkgs-bootstrap.fetchFromGitHub {
+	owner = "shajra";
+	repo = "direnv-nix-lorelei";
+
+	# This is example Git commit ID to pin to. Choose another to upgrade to
+	# a later version of Lorelei.
+	rev = "8310119578f9bcedb1e4ca2580d3b11bd7d214f2";
+
+	# Use pkgs.lib.fakeSha256 the first time using a new rev with Home
+	# Manager, which will then report back the real value to use. A real
+	# value will look something like this: sha256 =
+	# "198h7ryqdv0h9lv3sixqxzdl8wf57lsvzzm8viipmk4pb0lsyckh";
+	sha256 = lib.fakeSha256;
+    };
+
+    # Then we access the module it provides.
+    module-lorelei = (import lorelei-source).direnv-nix-lorelei-home;
+
+in
+
+# Here's where we configure options provided by imported modules. As is typical,
+# the final modules used to configure a machine don't create more options.
+{
+    # Here our configuration module imports the module Lorelei provides.
+    imports = [ module-lorelei ];
+
+    # Home manager already has a module that allows us to include Direnv on our
+    # user's PATH.
+    programs.direnv.enable = true;
+
+    # Here we enable the option to have Home Manager set up the symlink under
+    # $XDG_CONFIG_HOME/direnv/lib to enable Lorelei's usage with Direnv.
+    programs.direnv-nix-lorelei.enable = true;
+}
 ```
 
-    installing 'direnv-2.28.0'
+Not completely illustrated in the above example, the Lorelei Home Manager module provides two options:
 
-If you have `~/.nix-profile/bin` in your environment's `PATH`, you should be able to call the `direnv` executable. Here's a simple way of testing its availability.
+-   `programs.direnv-nix-lorelei.enable`: to install Lorelei and configure Direnv to use it.
+-   `programs.direnv-nix-lorelei.package`: in case you want to specify another version of Lorelei to use on the machine.
 
-```sh
-direnv version
-```
+If you're curious, you can read [the source code of the module](nix/home.nix) to see the specifications for these options.
 
-    2.28.0
+The example above has you going through a step to use `lib.fakeSha256` to get the real hash for Lorelei. These hashes are an important part of Nix's model of trusted code, but managing them when updating dependencies can be a chore. Eventually [Nix Flakes](https://nixos.wiki/wiki/Flakes) will release, which will help with that. In the meantime, you may be interested in the [Niv](https://github.com/nmattia/niv) project to manage these hashes when updating dependencies.
 
-## Per-project configuration<a id="sec-2-5"></a>
+If further interested, you may like looking at [a larger example](https://github.com/shajra/shajra-provisioning/blob/master/home/modules/base/default.nix) of Home Manager configuration of much more than just Lorelei.
+
+# Configuration and usage<a id="sec-3"></a>
+
+## Terminal and editor configuration<a id="sec-3-1"></a>
+
+If you're absolutely new to Direnv, we won't get any benefit from the configuration described in this document until we integrate Direnv with either our terminal's shell, our editor of choice, or both.
+
+We delegate to the [official Direnv documentation](https://direnv.net/#docs) on how to do this configuration. Specifically, have a look at
+
+-   [hooking Direnv into your preferred shell](https://direnv.net/docs/hook.html)
+-   the [Direnv wiki for pages about editor integration](https://github.com/direnv/direnv/wiki#editor-integration).
+
+## Per-project configuration<a id="sec-3-2"></a>
 
 If you have a project that can be used to enter a Nix shell with a call like
 
@@ -224,16 +323,7 @@ You can delete this data to start fresh.
 
 The symlinks in the GC root directory have human readable names to assist manual curation if you need it.
 
-## Further configuration<a id="sec-2-6"></a>
-
-If you're absolutely new to Direnv, you could have followed all of the directions above, and still not experienced the benefit. Direnv doesn't do anything until integrated with our terminals or editors.
-
-We delegate to the [official Direnv documentation](https://direnv.net/#docs) on how to do this configuration. Specifically, have a look at
-
--   [hooking Direnv into your preferred shell](https://direnv.net/docs/hook.html)
--   the [Direnv wiki for pages about editor integration](https://github.com/direnv/direnv/wiki#editor-integration).
-
-# Prior art<a id="sec-3"></a>
+# Prior art<a id="sec-4"></a>
 
 There are four projects that were considered before writing Lorelei:
 
@@ -262,7 +352,7 @@ Lorelei is different from Sorri in two main ways:
 
 Lorri has been relatively active about refining the approach to calculating a Direnv environment, more so than any of the other projects. Sorri copies code, but leads to more work porting changes from Lorri to Sorri. Lorelei uses Nix to use Lorri's code directly. This eases maintenance, but does mean that you *have* to install Lorelei with Nix. However, this is not a bad idea, because Lorelei rigorously pins all of its dependencies, all the way down to `coreutils`. So by installing Lorelei with Nix, we get more precision.
 
-# Known limitations<a id="sec-4"></a>
+# Known limitations<a id="sec-5"></a>
 
 There's two known limitations of Lorelei:
 
@@ -275,19 +365,19 @@ However, we probably don't want to support something like `nix-shell`'s `--packa
 
 Also, soon to be released in a new version of Nix are [Nix flakes](https://nixos.wiki/wiki/Flakes). If you don't know what flakes are, you may want to wait until they stabilize and are officially released. If you're an early adopter of flakes, the [Nix-direnv](https://github.com/nix-community/nix-direnv) project has support for Nix flakes with it's `use_flake` function. Lorelei can be installed and used concurrently with other projects offering similar functionality (Lorri, Nix-direnv, and the rest). You just make different calls in your project's `.envrc` files. No core contributor of Lorelei is using this unreleased version of Nix supporting flakes, so we didn't want to provide something we had not tested ourselves.
 
-# Release<a id="sec-5"></a>
+# Release<a id="sec-6"></a>
 
 The "main" branch of the repository on GitHub has the latest released version of this code. There is currently no commitment to either forward or backward compatibility.
 
 "user/shajra" branches are personal branches that may be force-pushed to. The "main" branch should not experience force-pushes and is recommended for general use.
 
-# License<a id="sec-6"></a>
+# License<a id="sec-7"></a>
 
 All files in this "direnv-nix-lorelei" project are licensed under the terms of GPLv3 or (at your option) any later version.
 
 Please see the [./COPYING.md](./COPYING.md) file for more details.
 
-# Contribution<a id="sec-7"></a>
+# Contribution<a id="sec-8"></a>
 
 Feel free to file issues and submit pull requests with GitHub.
 

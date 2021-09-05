@@ -4,8 +4,11 @@
 #+LINK: direnv-editor https://github.com/direnv/direnv/wiki#editor-integration
 #+LINK: direnv-shell https://direnv.net/docs/hook.html
 #+LINK: github-actions https://github.com/shajra/direnv-nix-lorelei/actions
+#+LINK: homemanager https://github.com/nix-community/home-manager
+#+LINK: homemanager-manual https://rycee.gitlab.io/home-manager/
 #+LINK: lorelei-song https://www.youtube.com/watch?v=VDw81PRP2SQ
 #+LINK: lorri https://github.com/target/lorri
+#+LINK: niv https://github.com/nmattia/niv
 #+LINK: nix https://nixos.org/nix
 #+LINK: nix-darwin https://daiderd.com/nix-darwin
 #+LINK: nixdirenv https://github.com/nix-community/nix-direnv
@@ -19,4 +22,5 @@
 #+LINK: nixpkgs https://github.com/NixOS/nixpkgs
 #+LINK: nixpkgs-manual https://nixos.org/nixpkgs/manual
 #+LINK: nix-tutorial https://github.com/shajra/example-nix/tree/master/tutorials/0-nix-intro
+#+LINK: shajra-provisioning-base https://github.com/shajra/shajra-provisioning/blob/master/home/modules/base/default.nix
 #+LINK: sorri https://github.com/nmattia/sorri
