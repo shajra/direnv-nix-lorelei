@@ -52,4 +52,11 @@ let
         direnv-nix-lorelei-home;
     };
 
-in { inherit distribution nix-project nixpkgs; }
+    build = distribution // {
+        inherit (nixpkgs)
+        lorri-eval-patched
+        lorri-eval-stock
+        ;
+    };
+
+in { inherit build distribution nix-project nixpkgs; }
