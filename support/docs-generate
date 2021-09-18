@@ -12,6 +12,7 @@ nix run \
     nixpkgs.bash \
     nixpkgs.coreutils \
     nixpkgs.gnugrep \
+    nixpkgs.gnutar \
     nixpkgs.tree \
     --command \
     org2gfm \

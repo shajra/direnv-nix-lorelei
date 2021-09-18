@@ -19,3 +19,4 @@ jobs:
     - run: cat ~/.config/nix/nix.conf
     - run: nix --print-build-logs build --file nix/ci.nix
     - run: nix path-info --file nix/ci.nix
+    - run: support/tests-run

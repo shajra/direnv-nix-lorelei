@@ -13,8 +13,9 @@
 
 let
     name = "direnv-nix-lorelei";
-    packagePath = "direnv-nix-lorelei";
     meta.description = "Alternative Nix functions for Direnv";
+    packagePath = "direnv-nix-lorelei";
+    baseName = "nix-lorelei";
     buildSource = lib.sourceFilesBySuffices ./. [
         ".json"
         ".nix"
@@ -25,8 +26,7 @@ in
 
 nix-project-lib.writeShellCheckedShareLib name packagePath
 {
-    inherit meta;
-    baseName = "nix-lorelei";
+    inherit meta baseName;
 }
 ''
 # shellcheck shell=bash
@@ -437,7 +437,7 @@ _nixgc_capture()
 _nixgc_capture_autowatchable()
 {
     "${gnused}/bin/sed" -n "
-        # find paths and substitute them for the line
+        # find paths and substitute the line for them
         s/\(copied source\|evaluating file\|trace: lorri read:\)[^']*'\([^']\+\)'.*/\2/;
         # delete /nix/store paths, lines with no found paths, and empty lines
         /^\(\/nix\/\|[^\/]\|$\)/d;

@@ -43,6 +43,7 @@ let
         direnv-nix-lorelei =
             super.callPackage (import ./direnv-nix-lorelei.nix) {};
         direnv-nix-lorelei-home = ./home.nix;
+        direnv-nix-lorelei-test = super.callPackage (import ./test/test.nix) {};
     };
 
     distribution = {
@@ -54,6 +55,7 @@ let
 
     build = distribution // {
         inherit (nixpkgs)
+        direnv-nix-lorelei-test
         lorri-eval-patched
         lorri-eval-stock
         ;

@@ -1,0 +1,11 @@
+#!/bin/sh -eu
+
+cd "$(dirname "$0")/.."
+
+nix run \
+    --ignore-environment \
+    --file nix \
+    build.direnv-nix-lorelei-test \
+    --command \
+    direnv-nix-lorelei-test \
+    --nix "$(command -v nix)"
