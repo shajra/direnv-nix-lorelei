@@ -27,9 +27,9 @@ let
         ];
     };
 
-    overlay = self: super: nix-project // rec {
+    overlay = self: _super: nix-project // rec {
         lorri-runtime =
-            super.callPackage
+            self.callPackage
             (import "${lorri-stock}/nix/runtime.nix")
             {};
         lorri-eval-stock = {src}:
@@ -41,9 +41,9 @@ let
         lorri-envrc =
             "${lorri-stock}/src/ops/direnv/envrc.bash";
         direnv-nix-lorelei =
-            super.callPackage (import ./direnv-nix-lorelei.nix) {};
+            self.callPackage (import ./direnv-nix-lorelei.nix) {};
         direnv-nix-lorelei-home = ./home.nix;
-        direnv-nix-lorelei-test = super.callPackage (import ./test/test.nix) {};
+        direnv-nix-lorelei-test = self.callPackage (import ./test/test.nix) {};
     };
 
     distribution = {
