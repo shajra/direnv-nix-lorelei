@@ -168,7 +168,7 @@ After a successful call of `nix build`, you'll see one or more symlinks for each
 readlink result*
 ```
 
-    /nix/store/qxh4xmm9f21nxadbmd8jf8zcya9shvs6-direnv-nix-lorelei
+    /nix/store/q44il55npbs3pj2zpg0f828hy6miysn0-direnv-nix-lorelei
 
 Following these symlinks, we can see the files the project provides:
 
@@ -191,7 +191,7 @@ It's common to configure these "result" symlinks as ignored in source control to
 nix path-info --file . direnv-nix-lorelei
 ```
 
-    /nix/store/qxh4xmm9f21nxadbmd8jf8zcya9shvs6-direnv-nix-lorelei
+    /nix/store/q44il55npbs3pj2zpg0f828hy6miysn0-direnv-nix-lorelei
 
 ## Running commands<a id="sec-6-3"></a>
 
