@@ -2,16 +2,21 @@
 , coreutils
 , dash
 , direnv
-, direnv-nix-lorelei
 , gnugrep
+, lorelei
 , ncurses
 , nix-project-lib
 , path
+, substituteAll
 }:
 
 let
-    progName = "direnv-nix-lorelei-test";
+    progName = "lorelei-test";
     meta.description = "Test of Lorelei";
+    shellNix = substituteAll {
+        src = ./shell.nix.template;
+        nixpkgs = path;
+    };
 in
 
 nix-project-lib.writeShellCheckedExe progName
@@ -31,10 +36,10 @@ set -eu
 set -o pipefail
 
 
-. "${nix-project-lib.common}/share/nix-project/common.bash"
+. "${nix-project-lib.scriptCommon}/share/nix-project/common.bash"
 
 
-NIX_EXE="$(command -v nix || true)"
+NIX_EXE="$(command -v nix || echo /run/current-system/sw/bin/nix)"
 
 
 print_usage()
@@ -87,9 +92,8 @@ run_test()
 {
     env --ignore-environment \
         TERM=linux \
-        NIX_PATH="nixpkgs=${path}" \
-        SHELL_NIX="${./shell.nix}" \
-        LORELEI="${direnv-nix-lorelei}" \
+        SHELL_NIX="${shellNix}" \
+        LORELEI="${lorelei}" \
         PATH="$(path_for "$NIX_EXE"):$PATH" \
         bats "${./test.bats}"
 }

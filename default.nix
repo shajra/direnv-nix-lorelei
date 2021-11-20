@@ -1,1 +1,1 @@
-(import ./nix {}).distribution
+(import nix/compat.nix).defaultNix

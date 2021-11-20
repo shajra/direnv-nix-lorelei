@@ -5,7 +5,7 @@
 , lib
 , lorri-envrc
 , lorri-eval-stock
-, lorri-eval-patched
+, lorri-eval-notrace
 , nix-project-lib
 , path
 , xxHash
@@ -16,8 +16,8 @@ let
     meta.description = "Alternative Nix functions for Direnv";
     packagePath = "direnv-nix-lorelei";
     baseName = "nix-lorelei";
-    buildSource = lib.sourceFilesBySuffices ./. [
-        ".json"
+    buildSource = lib.sourceFilesBySuffices ../. [
+        ".lock"
         ".nix"
         ".patch"
     ];
@@ -29,8 +29,6 @@ nix-project-lib.writeShellCheckedShareLib name packagePath
     inherit meta baseName;
 }
 ''
-# shellcheck shell=bash
-
 _nixgc_usage()
 {
     "${coreutils}/bin/cat" - <<EOF
@@ -79,7 +77,7 @@ use_nix_gcrooted()
     local auto_watch_none=()
     local auto_watch_mtime=()
     local auto_watch_hash=()
-    local auto_watch_eval=patched
+    local auto_watch_eval=notrace
     local auto_watch=auto_watch_none
     local shell_file=""
     local keep_last=5
@@ -418,7 +416,7 @@ _nixgc_build()
         --verbose --verbose \
         --no-out-link \
         --arg src "$shell_file" \
-        --expr "((import ${buildSource} {}).build.lorri-eval-$auto_watch_eval)"
+        --expr "import ${buildSource}/nix/eval.nix \"$auto_watch_eval\""
 }
 
 _nixgc_select_line()
